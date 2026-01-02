@@ -1,0 +1,38 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Profile photos
+    match /profiles/{userId}/{allPaths=**} {
+      // Users can upload their own profile photo
+      allow write: if isAuthenticated() && request.auth.uid == userId
+        && request.resource.size < 5 * 1024 * 1024 // 5MB limit
+        && request.resource.contentType.matches('image/.*');
+      // Users can read their own profile photo
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      // Anyone authenticated can read profile photos (for display)
+      allow read: if isAuthenticated();
+    }
+    
+    // Video uploads (completion videos)
+    match /completions/{userId}/{completionId}/{allPaths=**} {
+      // Players can upload their own completion videos
+      allow write: if isAuthenticated() && request.auth.uid == userId
+        && request.resource.size < 50 * 1024 * 1024 // 50MB limit
+        && request.resource.contentType.matches('video/.*');
+      // Players can read their own videos
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      // Coaches can read videos of their players
+      // Note: This requires checking Firestore for coach-player relationship
+      // For now, we'll allow authenticated users to read (can be restricted further)
+      allow read: if isAuthenticated();
+    }
+  }
+}
+
+
+

@@ -1,0 +1,14 @@
+node_modules
+dist
+build
+coverage
+.vscode
+.idea
+*.log
+.env.local
+.env
+.firebase
+firebase-debug.log
+
+
+
