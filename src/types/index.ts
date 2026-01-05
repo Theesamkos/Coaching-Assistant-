@@ -1,3 +1,7 @@
+// Re-export all database types
+export * from './database.types'
+
+// Legacy types for backward compatibility (will be removed)
 export type UserRole = 'coach' | 'player'
 
 export interface User {
@@ -13,13 +17,13 @@ export interface User {
 export interface Coach extends User {
   role: 'coach'
   organization?: string
-  players?: string[] // Array of player IDs
+  players?: string[]
 }
 
 export interface Player extends User {
   role: 'player'
   position?: string
-  coachId?: string // Reference to coach ID
+  coachId?: string
 }
 
 export interface Invitation {
@@ -32,6 +36,3 @@ export interface Invitation {
   expiresAt: Date
   acceptedAt?: Date
 }
-
-
-
