@@ -43,3 +43,5 @@ coverage
 # pnpm
 .pnpm-store
 
+.vercel
+.env*.local
