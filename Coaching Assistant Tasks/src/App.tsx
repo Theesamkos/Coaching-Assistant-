@@ -10,27 +10,13 @@ import ProgressTracker from './pages/progress/ProgressTracker'
 
 function App() {
   const [user, setUser] = useState<any>(null)
-  const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     // Check active session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
-      if (session?.user) {
-        // Get user profile to determine role
-        supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
-          .then(({ data }) => {
-            setProfile(data)
-            setLoading(false)
-          })
-      } else {
-        setLoading(false)
-      }
+      setLoading(false)
     })
 
     // Listen for auth changes
@@ -38,16 +24,6 @@ function App() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
-      if (session?.user) {
-        supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
-          .then(({ data }) => setProfile(data))
-      } else {
-        setProfile(null)
-      }
     })
 
     return () => subscription.unsubscribe()
@@ -55,8 +31,8 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900">
-        <div className="text-xl text-white">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-xl">Loading...</div>
       </div>
     )
   }
@@ -68,16 +44,20 @@ function App() {
         <Route path="/register" element={!user ? <RegisterPage /> : <Navigate to="/dashboard" />} />
         <Route
           path="/dashboard"
-          element={
-            user ? (
-              profile?.role === 'player' ? <PlayerDashboard /> : <CoachDashboard />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
+          element={user ? <CoachDashboard /> : <Navigate to="/login" />}
         />
-        <Route path="/drills" element={user ? <DrillLibrary /> : <Navigate to="/login" />} />
-        <Route path="/progress" element={user ? <ProgressTracker /> : <Navigate to="/login" />} />
+        <Route
+          path="/player-dashboard"
+          element={user ? <PlayerDashboard /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/drills"
+          element={user ? <DrillLibrary /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/progress"
+          element={user ? <ProgressTracker /> : <Navigate to="/login" />}
+        />
         <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
       </Routes>
     </Router>
