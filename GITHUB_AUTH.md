@@ -137,3 +137,5 @@ If you just want to push now without setting up SSH:
 - Switch to SSH: `git remote set-url origin git@github.com:Theesamkos/Coaching-Assistant-.git`
 - Switch to HTTPS: `git remote set-url origin https://github.com/Theesamkos/Coaching-Assistant-.git`
 
+
+

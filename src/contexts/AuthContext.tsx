@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, ReactNode } from 'react'
 import { useAuthStore } from '@/store/authStore'
 import { authService } from '@/services/auth.service'
 import { userService } from '@/services/user.service'
-import { User as FirebaseUser } from 'firebase/auth'
+import { User as SupabaseUser } from '@supabase/supabase-js'
 
 interface AuthContextType {
   // Auth state is managed by Zustand store
@@ -13,18 +13,18 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { setFirebaseUser, setUserProfile, setLoading, clearAuth } = useAuthStore()
+  const { setSupabaseUser, setUserProfile, setLoading, clearAuth } = useAuthStore()
 
   const initializeAuth = () => {
     setLoading(true)
     
     // Listen to auth state changes
-    const unsubscribe = authService.onAuthStateChanged(async (firebaseUser: FirebaseUser | null) => {
-      setFirebaseUser(firebaseUser)
+    const unsubscribe = authService.onAuthStateChanged(async (supabaseUser: SupabaseUser | null) => {
+      setSupabaseUser(supabaseUser)
 
-      if (firebaseUser) {
-        // Load user profile from Firestore
-        const { user, error } = await userService.getUserProfile(firebaseUser.uid)
+      if (supabaseUser) {
+        // Load user profile from Supabase
+        const { user, error } = await userService.getUserProfile(supabaseUser.id)
         if (user && !error) {
           setUserProfile(user)
         } else {
@@ -62,6 +62,3 @@ export function useAuthContext() {
   }
   return context
 }
-
-
-

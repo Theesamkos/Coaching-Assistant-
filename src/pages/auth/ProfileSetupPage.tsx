@@ -5,7 +5,7 @@ import { userService } from '@/services/user.service'
 import { UserRole } from '@/types'
 
 export default function ProfileSetupPage() {
-  const { firebaseUser, userProfile, setUserProfile } = useAuth()
+  const { supabaseUser, userProfile, setUserProfile } = useAuth()
   const navigate = useNavigate()
   const [displayName, setDisplayName] = useState('')
   const [role, setRole] = useState<UserRole>('player')
@@ -15,8 +15,8 @@ export default function ProfileSetupPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (firebaseUser) {
-      setDisplayName(firebaseUser.displayName || '')
+    if (supabaseUser) {
+      setDisplayName(supabaseUser.user_metadata?.display_name || supabaseUser.email || '')
     }
     if (userProfile) {
       setRole(userProfile.role)
@@ -26,14 +26,14 @@ export default function ProfileSetupPage() {
         setPosition((userProfile as any).position || '')
       }
     }
-  }, [firebaseUser, userProfile])
+  }, [supabaseUser, userProfile])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
 
-    if (!firebaseUser) {
+    if (!supabaseUser) {
       setError('Not authenticated')
       setLoading(false)
       return
@@ -43,11 +43,11 @@ export default function ProfileSetupPage() {
       role === 'coach' ? { organization } : { position }
 
     const { success, error: updateError } = await userService.createUserProfile(
-      firebaseUser.uid,
+      supabaseUser.id,
       {
-        email: firebaseUser.email || '',
+        email: supabaseUser.email || '',
         displayName,
-        photoURL: firebaseUser.photoURL || undefined,
+        photoURL: supabaseUser.user_metadata?.avatar_url || undefined,
         role,
         ...additionalData,
       }
@@ -58,7 +58,7 @@ export default function ProfileSetupPage() {
       setLoading(false)
     } else {
       // Reload user profile
-      const { user } = await userService.getUserProfile(firebaseUser.uid)
+      const { user } = await userService.getUserProfile(supabaseUser.id)
       if (user) {
         setUserProfile(user)
         navigate('/dashboard')
