@@ -1,13 +1,13 @@
 import { create } from 'zustand'
-import { User as FirebaseUser } from 'firebase/auth'
+import { User as SupabaseUser } from '@supabase/supabase-js'
 import { User } from '@/types'
 
 interface AuthState {
-  firebaseUser: FirebaseUser | null
+  supabaseUser: SupabaseUser | null
   userProfile: User | null
   loading: boolean
   error: string | null
-  setFirebaseUser: (user: FirebaseUser | null) => void
+  setSupabaseUser: (user: SupabaseUser | null) => void
   setUserProfile: (profile: User | null) => void
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
@@ -15,22 +15,19 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  firebaseUser: null,
+  supabaseUser: null,
   userProfile: null,
   loading: true,
   error: null,
-  setFirebaseUser: (user) => set({ firebaseUser: user }),
+  setSupabaseUser: (user) => set({ supabaseUser: user }),
   setUserProfile: (profile) => set({ userProfile: profile }),
   setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),
   clearAuth: () =>
     set({
-      firebaseUser: null,
+      supabaseUser: null,
       userProfile: null,
       loading: false,
       error: null,
     }),
 }))
-
-
-

@@ -4,7 +4,7 @@ import { userService } from '@/services/user.service'
 import { UserRole } from '@/types'
 
 export function useAuth() {
-  const { firebaseUser, userProfile, loading, error, setUserProfile } = useAuthStore()
+  const { supabaseUser, userProfile, loading, error, setUserProfile } = useAuthStore()
 
   const signInWithEmail = async (email: string, password: string) => {
     const { user, error } = await authService.signInWithEmail(email, password)
@@ -21,7 +21,7 @@ export function useAuth() {
     const { user, error } = await authService.registerWithEmail(email, password)
     if (user && !error) {
       // Create user profile
-      await userService.createUserProfile(user.uid, {
+      await userService.createUserProfile(user.id, {
         email,
         displayName,
         role,
@@ -47,13 +47,13 @@ export function useAuth() {
     return { error }
   }
 
-  const isAuthenticated = !!firebaseUser
+  const isAuthenticated = !!supabaseUser
   const isCoach = userProfile?.role === 'coach'
   const isPlayer = userProfile?.role === 'player'
   const needsProfileSetup = isAuthenticated && !userProfile
 
   return {
-    firebaseUser,
+    supabaseUser,
     userProfile,
     loading,
     error,
@@ -69,6 +69,3 @@ export function useAuth() {
     setUserProfile,
   }
 }
-
-
-
