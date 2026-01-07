@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { supabase } from './config/supabase'
+import { useAuthStore } from './store/authStore'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 import CoachDashboard from './pages/coach/CoachDashboard'
@@ -12,6 +13,7 @@ function App() {
   const [user, setUser] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const { setSupabaseUser, setUserProfile, setLoading: setAuthLoading } = useAuthStore()
 
   useEffect(() => {
     // Check active session
@@ -29,10 +31,13 @@ function App() {
               console.error('Error loading profile:', error)
             }
             setProfile(data)
+            setUserProfile(data)
             setLoading(false)
+            setAuthLoading(false)
           })
       } else {
         setLoading(false)
+        setAuthLoading(false)
       }
     })
 
@@ -52,9 +57,11 @@ function App() {
               console.error('Error loading profile:', error)
             }
             setProfile(data)
+            setUserProfile(data)
           })
       } else {
         setProfile(null)
+        setUserProfile(null)
       }
     })
 
