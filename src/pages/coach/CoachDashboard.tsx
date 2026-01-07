@@ -1,118 +1,194 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../../config/supabase'
 import { useNavigate } from 'react-router-dom'
-
-interface Player {
-  id: string
-  full_name: string
-  email: string
-  created_at: string
-}
+import { useAuth } from '@/hooks/useAuth'
+import { playerService } from '@/services/player.service'
+import { practiceService } from '@/services/practice.service'
+import { drillService } from '@/services/drill.service'
+import DashboardLayout from '@/components/layout/DashboardLayout'
+import {
+  Users,
+  Calendar,
+  BookOpen,
+  TrendingUp,
+  UserPlus,
+  Plus,
+  ArrowRight,
+} from 'lucide-react'
+import { CoachPlayer, Practice, Drill } from '@/types'
 
 export default function CoachDashboard() {
-  const [players, setPlayers] = useState<Player[]>([])
-  const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<any>(null)
+  const { userProfile } = useAuth()
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState({
+    totalPlayers: 0,
+    activePlayers: 0,
+    upcomingPractices: 0,
+    totalDrills: 0,
+  })
+  const [recentPlayers, setRecentPlayers] = useState<CoachPlayer[]>([])
+  const [upcomingPractices, setUpcomingPractices] = useState<Practice[]>([])
 
   useEffect(() => {
-    loadData()
-  }, [])
+    if (userProfile?.id) {
+      loadDashboardData()
+    }
+  }, [userProfile])
 
-  async function loadData() {
+  async function loadDashboardData() {
+    if (!userProfile?.id) return
+
+    setLoading(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
+      // Load players
+      const { data: players } = await playerService.getCoachPlayers(userProfile.id)
+      const activePlayers = players?.filter((p) => p.status === 'accepted') || []
+      
+      // Load practices
+      const today = new Date()
+      const nextMonth = new Date()
+      nextMonth.setMonth(nextMonth.getMonth() + 1)
+      const { data: practices } = await practiceService.getPractices(userProfile.id, {
+        startDate: today,
+        endDate: nextMonth,
+        status: 'scheduled',
+      })
 
-      const { data: playersData, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('role', 'player')
-        .order('created_at', { ascending: false })
+      // Load drills
+      const { data: drills } = await drillService.getDrills(userProfile.id)
 
-      if (error) throw error
-      setPlayers(playersData || [])
+      // Update stats
+      setStats({
+        totalPlayers: players?.length || 0,
+        activePlayers: activePlayers.length,
+        upcomingPractices: practices?.length || 0,
+        totalDrills: drills?.length || 0,
+      })
+
+      // Set recent data
+      setRecentPlayers(players?.slice(0, 5) || [])
+      setUpcomingPractices(practices?.slice(0, 3) || [])
     } catch (error) {
-      console.error('Error loading data:', error)
+      console.error('Error loading dashboard:', error)
     } finally {
       setLoading(false)
     }
   }
 
-  async function handleLogout() {
-    await supabase.auth.signOut()
-    navigate('/login')
-  }
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
-      </div>
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-slate-600">Loading dashboard...</p>
+          </div>
+        </div>
+      </DashboardLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <DashboardLayout>
       {/* Header */}
-      <header className="bg-gray-800 border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Coach Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-gray-300">Welcome, Coach {user?.email}</span>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">
+          Welcome back, {userProfile?.displayName}! 👋
+        </h1>
+        <p className="text-slate-600">Here's what's happening with your team today.</p>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <StatCard
+          icon={Users}
+          label="Active Players"
+          value={stats.activePlayers}
+          total={stats.totalPlayers}
+          color="blue"
+          onClick={() => navigate('/players')}
+        />
+        <StatCard
+          icon={Calendar}
+          label="Upcoming Practices"
+          value={stats.upcomingPractices}
+          color="emerald"
+          onClick={() => navigate('/practices')}
+        />
+        <StatCard
+          icon={BookOpen}
+          label="Total Drills"
+          value={stats.totalDrills}
+          color="purple"
+          onClick={() => navigate('/drills')}
+        />
+        <StatCard
+          icon={TrendingUp}
+          label="Team Progress"
+          value="--"
+          color="amber"
+          onClick={() => navigate('/progress')}
+        />
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Recent Players */}
+        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+            <h2 className="text-lg font-semibold text-slate-900">Your Players</h2>
             <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition"
+              onClick={() => navigate('/players')}
+              className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
             >
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <h3 className="text-gray-400 text-sm font-medium mb-2">Total Players</h3>
-            <p className="text-3xl font-bold">{players.length}</p>
-          </div>
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <h3 className="text-gray-400 text-sm font-medium mb-2">Active Sessions</h3>
-            <p className="text-3xl font-bold">0</p>
-          </div>
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <h3 className="text-gray-400 text-sm font-medium mb-2">Drills Created</h3>
-            <p className="text-3xl font-bold">5</p>
-          </div>
-        </div>
-
-        {/* Players List */}
-        <div className="bg-gray-800 rounded-lg border border-gray-700">
-          <div className="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Your Players</h2>
-            <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition">
-              + Add Player
+              View all
+              <ArrowRight size={16} />
             </button>
           </div>
           <div className="p-6">
-            {players.length === 0 ? (
-              <p className="text-gray-400 text-center py-8">No players yet. Add your first player to get started!</p>
+            {recentPlayers.length === 0 ? (
+              <div className="text-center py-12">
+                <Users className="mx-auto h-12 w-12 text-slate-400 mb-4" />
+                <h3 className="text-sm font-medium text-slate-900 mb-2">No players yet</h3>
+                <p className="text-sm text-slate-600 mb-4">
+                  Get started by inviting players to your team
+                </p>
+                <button
+                  onClick={() => navigate('/players')}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <UserPlus size={18} />
+                  Invite Players
+                </button>
+              </div>
             ) : (
-              <div className="space-y-4">
-                {players.map((player) => (
+              <div className="space-y-3">
+                {recentPlayers.map((cp) => (
                   <div
-                    key={player.id}
-                    className="bg-gray-700 rounded-lg p-4 flex justify-between items-center hover:bg-gray-600 transition"
+                    key={cp.id}
+                    className="flex items-center justify-between p-4 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all cursor-pointer"
+                    onClick={() => navigate(`/players/${cp.playerId}`)}
                   >
-                    <div>
-                      <h3 className="font-semibold">{player.full_name}</h3>
-                      <p className="text-sm text-gray-400">{player.email}</p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+                        {cp.player?.displayName?.charAt(0).toUpperCase() || '?'}
+                      </div>
+                      <div>
+                        <p className="font-medium text-slate-900">{cp.player?.displayName}</p>
+                        <p className="text-sm text-slate-600">{cp.player?.email}</p>
+                      </div>
                     </div>
-                    <button className="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg transition text-sm">
-                      View Details
-                    </button>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        cp.status === 'accepted'
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : cp.status === 'pending'
+                          ? 'bg-amber-100 text-amber-700'
+                          : 'bg-slate-100 text-slate-700'
+                      }`}
+                    >
+                      {cp.status}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -121,23 +197,119 @@ export default function CoachDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4">
+          <button
+            onClick={() => navigate('/players')}
+            className="w-full bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl p-6 text-left transition-all shadow-lg shadow-blue-500/20"
+          >
+            <UserPlus className="mb-3" size={24} />
+            <h3 className="text-lg font-semibold mb-1">Invite Players</h3>
+            <p className="text-blue-100 text-sm">Add new players to your roster</p>
+          </button>
+
           <button
             onClick={() => navigate('/drills')}
-            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg p-6 text-left transition"
+            className="w-full bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl p-6 text-left transition-all shadow-lg shadow-purple-500/20"
           >
-            <h3 className="text-xl font-semibold mb-2">📚 Drill Library</h3>
-            <p className="text-gray-200">Create and manage practice drills</p>
+            <Plus className="mb-3" size={24} />
+            <h3 className="text-lg font-semibold mb-1">Create Drill</h3>
+            <p className="text-purple-100 text-sm">Design a new practice drill</p>
           </button>
+
           <button
-            onClick={() => navigate('/progress')}
-            className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 rounded-lg p-6 text-left transition"
+            onClick={() => navigate('/practices')}
+            className="w-full bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl p-6 text-left transition-all shadow-lg shadow-emerald-500/20"
           >
-            <h3 className="text-xl font-semibold mb-2">📊 Progress Tracking</h3>
-            <p className="text-gray-200">View player performance and analytics</p>
+            <Calendar className="mb-3" size={24} />
+            <h3 className="text-lg font-semibold mb-1">Schedule Practice</h3>
+            <p className="text-emerald-100 text-sm">Plan your next session</p>
           </button>
         </div>
-      </main>
+      </div>
+
+      {/* Upcoming Practices */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200">
+        <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-slate-900">Upcoming Practices</h2>
+          <button
+            onClick={() => navigate('/practices')}
+            className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+          >
+            View all
+            <ArrowRight size={16} />
+          </button>
+        </div>
+        <div className="p-6">
+          {upcomingPractices.length === 0 ? (
+            <div className="text-center py-12">
+              <Calendar className="mx-auto h-12 w-12 text-slate-400 mb-4" />
+              <h3 className="text-sm font-medium text-slate-900 mb-2">No upcoming practices</h3>
+              <p className="text-sm text-slate-600 mb-4">Schedule your first practice session</p>
+              <button
+                onClick={() => navigate('/practices')}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+              >
+                <Plus size={18} />
+                Schedule Practice
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {upcomingPractices.map((practice) => (
+                <div
+                  key={practice.id}
+                  className="p-4 rounded-lg border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 transition-all cursor-pointer"
+                  onClick={() => navigate(`/practices/${practice.id}`)}
+                >
+                  <h4 className="font-semibold text-slate-900 mb-2">{practice.title}</h4>
+                  <p className="text-sm text-slate-600 mb-3">{practice.description}</p>
+                  <div className="flex items-center justify-between text-xs text-slate-500">
+                    <span>{new Date(practice.scheduledDate).toLocaleDateString()}</span>
+                    {practice.durationMinutes && <span>{practice.durationMinutes} min</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </DashboardLayout>
+  )
+}
+
+// Stat Card Component
+interface StatCardProps {
+  icon: React.ElementType
+  label: string
+  value: number | string
+  total?: number
+  color: 'blue' | 'emerald' | 'purple' | 'amber'
+  onClick?: () => void
+}
+
+function StatCard({ icon: Icon, label, value, total, color, onClick }: StatCardProps) {
+  const colorClasses = {
+    blue: 'from-blue-500 to-blue-600 shadow-blue-500/20',
+    emerald: 'from-emerald-500 to-emerald-600 shadow-emerald-500/20',
+    purple: 'from-purple-500 to-purple-600 shadow-purple-500/20',
+    amber: 'from-amber-500 to-amber-600 shadow-amber-500/20',
+  }
+
+  return (
+    <div
+      onClick={onClick}
+      className={`bg-gradient-to-br ${colorClasses[color]} rounded-xl p-6 text-white shadow-lg cursor-pointer hover:scale-105 transition-transform`}
+    >
+      <div className="flex items-center justify-between mb-4">
+        <Icon size={24} />
+        {total !== undefined && (
+          <span className="text-sm opacity-90">
+            of {total}
+          </span>
+        )}
+      </div>
+      <p className="text-3xl font-bold mb-1">{value}</p>
+      <p className="text-sm opacity-90">{label}</p>
     </div>
   )
 }

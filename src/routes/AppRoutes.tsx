@@ -4,19 +4,24 @@ import LoginPage from '@/pages/auth/LoginPage'
 import RegisterPage from '@/pages/auth/RegisterPage'
 import ProfileSetupPage from '@/pages/auth/ProfileSetupPage'
 import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage'
+import CoachDashboard from '@/pages/coach/CoachDashboard'
+import PlayerDashboard from '@/pages/player/PlayerDashboard'
 import ProtectedRoute from '@/components/routing/ProtectedRoute'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 
 function AppRoutes() {
-  const { loading, isAuthenticated, needsProfileSetup } = useAuth()
+  const { loading, isAuthenticated, needsProfileSetup, userProfile } = useAuth()
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-slate-50">
         <LoadingSpinner />
       </div>
     )
   }
+
+  // Determine dashboard based on user role
+  const DashboardComponent = userProfile?.role === 'coach' ? CoachDashboard : PlayerDashboard
 
   return (
     <Routes>
@@ -43,6 +48,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      
       <Route
         path="/dashboard"
         element={
@@ -50,8 +56,135 @@ function AppRoutes() {
             {needsProfileSetup ? (
               <Navigate to="/profile-setup" replace />
             ) : (
-              <div>Dashboard (Coming Soon)</div>
+              <DashboardComponent />
             )}
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Placeholder routes for features we'll build */}
+      <Route
+        path="/players"
+        element={
+          <ProtectedRoute>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-slate-900 mb-2">Players</h1>
+                <p className="text-slate-600">Coming soon...</p>
+              </div>
+            </div>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/coaches"
+        element={
+          <ProtectedRoute>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-slate-900 mb-2">My Coaches</h1>
+                <p className="text-slate-600">Coming soon...</p>
+              </div>
+            </div>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/drills"
+        element={
+          <ProtectedRoute>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-slate-900 mb-2">Drills</h1>
+                <p className="text-slate-600">Coming soon...</p>
+              </div>
+            </div>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/practices"
+        element={
+          <ProtectedRoute>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-slate-900 mb-2">Practices</h1>
+                <p className="text-slate-600">Coming soon...</p>
+              </div>
+            </div>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/plans"
+        element={
+          <ProtectedRoute>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-slate-900 mb-2">Practice Plans</h1>
+                <p className="text-slate-600">Coming soon...</p>
+              </div>
+            </div>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/library"
+        element={
+          <ProtectedRoute>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-slate-900 mb-2">Library</h1>
+                <p className="text-slate-600">Coming soon...</p>
+              </div>
+            </div>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/files"
+        element={
+          <ProtectedRoute>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-slate-900 mb-2">Files</h1>
+                <p className="text-slate-600">Coming soon...</p>
+              </div>
+            </div>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/ai-assistant"
+        element={
+          <ProtectedRoute>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-slate-900 mb-2">AI Assistant</h1>
+                <p className="text-slate-600">Coming soon...</p>
+              </div>
+            </div>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/progress"
+        element={
+          <ProtectedRoute>
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-slate-900 mb-2">Progress Tracking</h1>
+                <p className="text-slate-600">Coming soon...</p>
+              </div>
+            </div>
           </ProtectedRoute>
         }
       />
@@ -71,9 +204,24 @@ function AppRoutes() {
           )
         }
       />
+
+      {/* 404 */}
+      <Route
+        path="*"
+        element={
+          <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold text-slate-900 mb-2">404</h1>
+              <p className="text-slate-600 mb-4">Page not found</p>
+              <a href="/dashboard" className="text-blue-600 hover:text-blue-700">
+                Go to Dashboard
+              </a>
+            </div>
+          </div>
+        }
+      />
     </Routes>
   )
 }
 
 export default AppRoutes
-
