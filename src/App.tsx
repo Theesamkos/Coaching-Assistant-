@@ -24,8 +24,15 @@ function App() {
           .select('*')
           .eq('id', session.user.id)
           .single()
-          .then(({ data }) => {
+          .then(({ data, error }) => {
+            if (error) {
+              console.error('Error loading profile:', error)
+            }
             setProfile(data)
+            setLoading(false)
+          })
+          .catch((error) => {
+            console.error('Error loading profile:', error)
             setLoading(false)
           })
       } else {
@@ -44,7 +51,15 @@ function App() {
           .select('*')
           .eq('id', session.user.id)
           .single()
-          .then(({ data }) => setProfile(data))
+          .then(({ data, error }) => {
+            if (error) {
+              console.error('Error loading profile:', error)
+            }
+            setProfile(data)
+          })
+          .catch((error) => {
+            console.error('Error loading profile:', error)
+          })
       } else {
         setProfile(null)
       }
