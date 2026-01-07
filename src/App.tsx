@@ -31,10 +31,6 @@ function App() {
             setProfile(data)
             setLoading(false)
           })
-          .catch((error) => {
-            console.error('Error loading profile:', error)
-            setLoading(false)
-          })
       } else {
         setLoading(false)
       }
@@ -56,9 +52,6 @@ function App() {
               console.error('Error loading profile:', error)
             }
             setProfile(data)
-          })
-          .catch((error) => {
-            console.error('Error loading profile:', error)
           })
       } else {
         setProfile(null)
