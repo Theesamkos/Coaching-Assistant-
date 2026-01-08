@@ -4,10 +4,15 @@ import LoginPage from '@/pages/auth/LoginPage'
 import RegisterPage from '@/pages/auth/RegisterPage'
 import ProfileSetupPage from '@/pages/auth/ProfileSetupPage'
 import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage'
+import AcceptInvitePage from '@/pages/auth/AcceptInvitePage'
 import CoachDashboard from '@/pages/coach/CoachDashboard'
 import PlayerDashboard from '@/pages/player/PlayerDashboard'
+import PlayersListPage from '@/pages/coach/PlayersListPage'
+import PlayerDetailPage from '@/pages/coach/PlayerDetailPage'
+import InvitePlayerPage from '@/pages/coach/InvitePlayerPage'
 import ProtectedRoute from '@/components/routing/ProtectedRoute'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import ServicesTestPage from '@/pages/test/ServicesTestPage'
 
 function AppRoutes() {
   const { loading, isAuthenticated, needsProfileSetup, userProfile } = useAuth()
@@ -38,6 +43,12 @@ function AppRoutes() {
         path="/forgot-password"
         element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <ForgotPasswordPage />}
       />
+      
+      {/* Invitation acceptance page - accessible to both logged in and logged out users */}
+      <Route
+        path="/invite/:token"
+        element={<AcceptInvitePage />}
+      />
 
       {/* Protected routes */}
       <Route
@@ -58,6 +69,34 @@ function AppRoutes() {
             ) : (
               <DashboardComponent />
             )}
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Coach Routes */}
+      <Route
+        path="/coach/players"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <PlayersListPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/coach/players/invite"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <InvitePlayerPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/coach/players/:id"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <PlayerDetailPage />
           </ProtectedRoute>
         }
       />
@@ -202,6 +241,16 @@ function AppRoutes() {
           ) : (
             <Navigate to="/login" replace />
           )
+        }
+      />
+
+      {/* Internal Test Route (REMOVE IN PRODUCTION) */}
+      <Route
+        path="/test/services"
+        element={
+          <ProtectedRoute>
+            <ServicesTestPage />
+          </ProtectedRoute>
         }
       />
 

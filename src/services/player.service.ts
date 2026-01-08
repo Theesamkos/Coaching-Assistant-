@@ -32,10 +32,12 @@ export const playerService = {
         id: item.id,
         coachId: item.coach_id,
         playerId: item.player_id,
+        playerEmail: item.player_email,
         invitationToken: item.invitation_token,
         status: item.status as InvitationStatus,
         invitedAt: new Date(item.invited_at),
         acceptedAt: item.accepted_at ? new Date(item.accepted_at) : null,
+        expiresAt: item.expires_at ? new Date(item.expires_at) : null,
         createdAt: new Date(item.created_at),
         updatedAt: new Date(item.updated_at),
         player: item.player ? {
@@ -78,10 +80,12 @@ export const playerService = {
         id: item.id,
         coachId: item.coach_id,
         playerId: item.player_id,
+        playerEmail: item.player_email,
         invitationToken: item.invitation_token,
         status: item.status as InvitationStatus,
         invitedAt: new Date(item.invited_at),
         acceptedAt: item.accepted_at ? new Date(item.accepted_at) : null,
+        expiresAt: item.expires_at ? new Date(item.expires_at) : null,
         createdAt: new Date(item.created_at),
         updatedAt: new Date(item.updated_at),
         coach: item.coach ? {
@@ -110,53 +114,40 @@ export const playerService = {
     playerEmail: string
   ): Promise<ApiResponse<CoachPlayer>> {
     try {
-      // First, check if player with this email exists
-      const { data: playerData, error: playerError } = await supabase
-        .from('profiles')
-        .select('id, role')
-        .eq('email', playerEmail)
-        .single()
-
-      if (playerError && playerError.code !== 'PGRST116') {
-        return { data: null, error: { code: playerError.code, message: playerError.message } }
-      }
-
-      // If player doesn't exist, return error
-      if (!playerData) {
-        return { 
-          data: null, 
-          error: { 
-            code: 'player_not_found', 
-            message: 'No user found with that email. They need to register first.' 
-          } 
-        }
-      }
-
-      // Check if player role is correct
-      if (playerData.role !== 'player') {
-        return { 
-          data: null, 
-          error: { 
-            code: 'invalid_role', 
-            message: 'This user is not registered as a player.' 
-          } 
-        }
-      }
-
-      // Check if relationship already exists
-      const { data: existingRelation } = await supabase
+      // Check if invitation already exists for this coach-email combination
+      const { data: existingInvitation } = await supabase
         .from('coach_players')
         .select('*')
         .eq('coach_id', coachId)
-        .eq('player_id', playerData.id)
+        .eq('player_email', playerEmail)
         .single()
 
-      if (existingRelation) {
+      if (existingInvitation) {
         return { 
           data: null, 
           error: { 
             code: 'already_invited', 
-            message: 'This player has already been invited or is already on your roster.' 
+            message: existingInvitation.status === 'accepted' 
+              ? 'This player is already on your roster.' 
+              : 'An invitation has already been sent to this email.'
+          } 
+        }
+      }
+
+      // Check if player with this email exists (optional - they might not be registered yet)
+      const { data: playerData } = await supabase
+        .from('profiles')
+        .select('id, role')
+        .eq('email', playerEmail)
+        .maybeSingle()
+
+      // If player exists and is not a player role, return error
+      if (playerData && playerData.role !== 'player') {
+        return { 
+          data: null, 
+          error: { 
+            code: 'invalid_role', 
+            message: 'This email is registered as a coach, not a player.' 
           } 
         }
       }
@@ -165,14 +156,20 @@ export const playerService = {
       const { data: tokenData } = await supabase.rpc('generate_invitation_token')
       const invitationToken = tokenData as string
 
-      // Create the coach_players relationship
+      // Calculate expiration date (30 days from now)
+      const expiresAt = new Date()
+      expiresAt.setDate(expiresAt.getDate() + 30)
+
+      // Create the invitation (player_id can be null if they haven't registered)
       const { data, error } = await supabase
         .from('coach_players')
         .insert({
           coach_id: coachId,
-          player_id: playerData.id,
+          player_id: playerData?.id || null, // Null if they haven't signed up yet
+          player_email: playerEmail,
           invitation_token: invitationToken,
           status: 'pending',
+          expires_at: expiresAt.toISOString(),
         })
         .select()
         .single()
@@ -185,10 +182,12 @@ export const playerService = {
         id: data.id,
         coachId: data.coach_id,
         playerId: data.player_id,
+        playerEmail: data.player_email,
         invitationToken: data.invitation_token,
         status: data.status as InvitationStatus,
         invitedAt: new Date(data.invited_at),
         acceptedAt: data.accepted_at ? new Date(data.accepted_at) : null,
+        expiresAt: data.expires_at ? new Date(data.expires_at) : null,
         createdAt: new Date(data.created_at),
         updatedAt: new Date(data.updated_at),
       }
@@ -306,6 +305,31 @@ export const playerService = {
         .delete()
         .eq('coach_id', coachId)
         .eq('player_id', playerId)
+
+      if (error) {
+        return { data: null, error: { code: error.code, message: error.message } }
+      }
+
+      return { data: true, error: null }
+    } catch (error: any) {
+      return { data: null, error: { code: 'unknown_error', message: error.message } }
+    }
+  },
+
+  /**
+   * Cancel a pending invitation
+   */
+  async cancelInvitation(
+    invitationId: string, 
+    coachId: string
+  ): Promise<ApiResponse<boolean>> {
+    try {
+      const { error } = await supabase
+        .from('coach_players')
+        .update({ status: 'cancelled' })
+        .eq('id', invitationId)
+        .eq('coach_id', coachId)
+        .eq('status', 'pending')
 
       if (error) {
         return { data: null, error: { code: error.code, message: error.message } }
