@@ -26,8 +26,8 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['coach', 'player'] },
-  { name: 'Players', path: '/players', icon: Users, roles: ['coach'] },
-  { name: 'My Coaches', path: '/coaches', icon: Users, roles: ['player'] },
+  { name: 'Players', path: '/coach/players', icon: Users, roles: ['coach'] },
+  { name: 'My Coaches', path: '/player/coaches', icon: Users, roles: ['player'] },
   { name: 'Drills', path: '/drills', icon: BookOpen, roles: ['coach', 'player'] },
   { name: 'Practices', path: '/practices', icon: Calendar, roles: ['coach', 'player'] },
   { name: 'Practice Plans', path: '/plans', icon: ClipboardList, roles: ['coach'] },
