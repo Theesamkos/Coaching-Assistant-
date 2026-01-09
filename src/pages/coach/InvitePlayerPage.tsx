@@ -78,8 +78,8 @@ export default function InvitePlayerPage() {
         setError(inviteError?.message || 'Failed to send invitation')
       } else {
         setSuccess(true)
-        // Generate the invitation link
-        const inviteLink = `${window.location.origin}/invite/${data.invitationToken}`
+        // Generate the invitation link with URL-encoded token
+        const inviteLink = `${window.location.origin}/invite/${encodeURIComponent(data.invitationToken!)}`
         setGeneratedLink(inviteLink)
         
         // Reset form
@@ -330,7 +330,7 @@ interface InvitationCardProps {
 function InvitationCard({ invitation, onCancel }: InvitationCardProps) {
   const [copied, setCopied] = useState(false)
 
-  const inviteLink = `${window.location.origin}/invite/${invitation.invitationToken}`
+  const inviteLink = `${window.location.origin}/invite/${encodeURIComponent(invitation.invitationToken!)}`
 
   const copyLink = () => {
     navigator.clipboard.writeText(inviteLink)
