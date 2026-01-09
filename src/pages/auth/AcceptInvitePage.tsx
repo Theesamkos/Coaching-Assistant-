@@ -5,7 +5,7 @@ import { playerService } from '@/services/player.service'
 import { CoachPlayer } from '@/types'
 
 export default function AcceptInvitePage() {
-  const { token } = useParams<{ token: string }>()
+  const { token: encodedToken } = useParams<{ token: string }>()
   const navigate = useNavigate()
   const { supabaseUser, userProfile, isAuthenticated, isPlayer } = useAuth()
   
@@ -14,6 +14,9 @@ export default function AcceptInvitePage() {
   const [error, setError] = useState('')
   const [accepting, setAccepting] = useState(false)
   const [success, setSuccess] = useState(false)
+
+  // Decode the token from the URL
+  const token = encodedToken ? decodeURIComponent(encodedToken) : undefined
 
   useEffect(() => {
     loadInvitation()
