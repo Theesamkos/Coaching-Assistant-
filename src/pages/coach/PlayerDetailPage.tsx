@@ -6,6 +6,7 @@ import { statisticsService } from '@/services/statistics.service'
 import { noteService } from '@/services/note.service'
 import { teamService } from '@/services/team.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
+import NoteModal from '@/components/notes/NoteModal'
 import { EnhancedPlayer, PlayerStatsAggregate, CoachNote, Team } from '@/types'
 import {
   ArrowLeftIcon,
@@ -245,7 +246,15 @@ export default function PlayerDetailPage() {
         <div className="p-6">
           {activeTab === 'profile' && <ProfileTab player={player} />}
           {activeTab === 'stats' && <StatsTab stats={stats} playerId={id!} />}
-          {activeTab === 'notes' && <NotesTab notes={notes} playerId={id!} coachId={userProfile?.id!} onRefresh={loadPlayerData} />}
+          {activeTab === 'notes' && (
+            <NotesTab
+              notes={notes}
+              playerId={id!}
+              coachId={userProfile?.id!}
+              playerName={player.displayName}
+              onRefresh={loadPlayerData}
+            />
+          )}
           {activeTab === 'teams' && <TeamsTab teams={teams} playerId={id!} />}
         </div>
       </div>
@@ -444,51 +453,172 @@ interface NotesTabProps {
   notes: CoachNote[]
   playerId: string
   coachId: string
+  playerName: string
   onRefresh: () => void
 }
 
-function NotesTab({ notes, playerId, coachId, onRefresh }: NotesTabProps) {
+function NotesTab({ notes, playerId, coachId, playerName, onRefresh }: NotesTabProps) {
+  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false)
+  const [editingNote, setEditingNote] = useState<CoachNote | null>(null)
+  const [deleting, setDeleting] = useState<string | null>(null)
+
+  const handleSaveNote = async (noteData: any) => {
+    try {
+      if (editingNote) {
+        // Update existing note
+        await noteService.updateNote(editingNote.id, noteData)
+      } else {
+        // Create new note
+        await noteService.createNote(coachId, playerId, noteData)
+      }
+      onRefresh()
+      setEditingNote(null)
+    } catch (error) {
+      throw error
+    }
+  }
+
+  const handleEditNote = (note: CoachNote) => {
+    setEditingNote(note)
+    setIsNoteModalOpen(true)
+  }
+
+  const handleDeleteNote = async (noteId: string) => {
+    if (!confirm('Are you sure you want to delete this note?')) return
+
+    setDeleting(noteId)
+    try {
+      await noteService.deleteNote(noteId)
+      onRefresh()
+    } catch (error) {
+      console.error('Error deleting note:', error)
+      alert('Failed to delete note')
+    } finally {
+      setDeleting(null)
+    }
+  }
+
+  const handleToggleVisibility = async (noteId: string, currentVisibility: boolean) => {
+    try {
+      await noteService.toggleNoteVisibility(noteId, !currentVisibility)
+      onRefresh()
+    } catch (error) {
+      console.error('Error toggling visibility:', error)
+      alert('Failed to update note visibility')
+    }
+  }
+
   if (notes.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-slate-400 mb-4">No notes yet</p>
-        <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition-colors">
-          Add First Note
-        </button>
-      </div>
+      <>
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">📝</div>
+          <p className="text-slate-400 mb-4">No notes yet</p>
+          <button
+            onClick={() => setIsNoteModalOpen(true)}
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition-colors"
+          >
+            Add First Note
+          </button>
+        </div>
+
+        <NoteModal
+          isOpen={isNoteModalOpen}
+          onClose={() => {
+            setIsNoteModalOpen(false)
+            setEditingNote(null)
+          }}
+          onSave={handleSaveNote}
+          note={editingNote}
+          playerName={playerName}
+        />
+      </>
     )
   }
 
   return (
-    <div className="space-y-4">
-      <button className="mb-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition-colors">
-        Add New Note
-      </button>
+    <>
+      <div className="space-y-4">
+        <button
+          onClick={() => setIsNoteModalOpen(true)}
+          className="mb-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition-colors"
+        >
+          Add New Note
+        </button>
 
-      {notes.map((note) => (
-        <div key={note.id} className="bg-slate-700 rounded-lg p-4 border border-slate-600">
-          <div className="flex items-start justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-1 bg-slate-600 rounded text-xs text-slate-300 capitalize">
-                {note.noteType}
-              </span>
-              {note.tags.map((tag) => (
-                <span key={tag} className="px-2 py-1 bg-blue-600/20 text-blue-400 rounded text-xs">
-                  {tag}
+        {notes.map((note) => (
+          <div key={note.id} className="bg-slate-700 rounded-lg p-4 border border-slate-600">
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="px-2 py-1 bg-slate-600 rounded text-xs text-slate-300 capitalize">
+                  {note.noteType}
                 </span>
-              ))}
+                {note.tags.map((tag) => (
+                  <span key={tag} className="px-2 py-1 bg-blue-600/20 text-blue-400 rounded text-xs">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <span className="text-xs text-slate-400">
+                {new Date(note.createdAt).toLocaleDateString()}
+              </span>
             </div>
-            <span className="text-xs text-slate-400">
-              {new Date(note.createdAt).toLocaleDateString()}
-            </span>
+
+            <p className="text-slate-200 mb-3 whitespace-pre-wrap">{note.content}</p>
+
+            {/* Visibility indicator */}
+            <div className="flex items-center justify-between pt-3 border-t border-slate-600">
+              <div className="flex items-center gap-2">
+                {note.isVisibleToPlayer ? (
+                  <span className="text-xs text-emerald-400 flex items-center gap-1">
+                    <span>👁️</span> Visible to player
+                  </span>
+                ) : (
+                  <span className="text-xs text-slate-500 flex items-center gap-1">
+                    <span>🔒</span> Private
+                  </span>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleToggleVisibility(note.id, note.isVisibleToPlayer)}
+                  className="text-xs px-3 py-1 bg-slate-600 hover:bg-slate-500 rounded text-slate-300 transition-colors"
+                  title={note.isVisibleToPlayer ? 'Make private' : 'Share with player'}
+                >
+                  {note.isVisibleToPlayer ? '🔒 Make Private' : '👁️ Share'}
+                </button>
+                <button
+                  onClick={() => handleEditNote(note)}
+                  className="text-xs px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-white transition-colors"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteNote(note.id)}
+                  disabled={deleting === note.id}
+                  className="text-xs px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-white transition-colors disabled:opacity-50"
+                >
+                  {deleting === note.id ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
+            </div>
           </div>
-          <p className="text-slate-200">{note.content}</p>
-          {note.isVisibleToPlayer && (
-            <div className="mt-2 text-xs text-emerald-400">👁️ Visible to player</div>
-          )}
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+
+      <NoteModal
+        isOpen={isNoteModalOpen}
+        onClose={() => {
+          setIsNoteModalOpen(false)
+          setEditingNote(null)
+        }}
+        onSave={handleSaveNote}
+        note={editingNote}
+        playerName={playerName}
+      />
+    </>
   )
 }
 
