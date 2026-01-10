@@ -10,6 +10,7 @@ import PlayerDashboard from '@/pages/player/PlayerDashboard'
 import PlayersListPage from '@/pages/coach/PlayersListPage'
 import PlayerDetailPage from '@/pages/coach/PlayerDetailPage'
 import InvitePlayerPage from '@/pages/coach/InvitePlayerPage'
+import DrillLibrary from '@/pages/drills/DrillLibrary'
 import ProtectedRoute from '@/components/routing/ProtectedRoute'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import ServicesTestPage from '@/pages/test/ServicesTestPage'
@@ -134,12 +135,16 @@ function AppRoutes() {
         path="/drills"
         element={
           <ProtectedRoute>
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-slate-900 mb-2">Drills</h1>
-                <p className="text-slate-600">Coming soon...</p>
-              </div>
-            </div>
+            <DrillLibrary />
+          </ProtectedRoute>
+        }
+      />
+      
+      <Route
+        path="/coach/drills"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <DrillLibrary />
           </ProtectedRoute>
         }
       />
