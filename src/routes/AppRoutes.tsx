@@ -10,6 +10,9 @@ import PlayerDashboard from '@/pages/player/PlayerDashboard'
 import PlayersListPage from '@/pages/coach/PlayersListPage'
 import PlayerDetailPage from '@/pages/coach/PlayerDetailPage'
 import InvitePlayerPage from '@/pages/coach/InvitePlayerPage'
+import PracticesPage from '@/pages/coach/PracticesPage'
+import CreatePracticePage from '@/pages/coach/CreatePracticePage'
+import PracticeDetailPage from '@/pages/coach/PracticeDetailPage'
 import DrillLibrary from '@/pages/drills/DrillLibrary'
 import ProtectedRoute from '@/components/routing/ProtectedRoute'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -98,6 +101,33 @@ function AppRoutes() {
         element={
           <ProtectedRoute requiredRole="coach">
             <PlayerDetailPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/coach/practices"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <PracticesPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/coach/practices/create"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <CreatePracticePage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/coach/practices/:id"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <PracticeDetailPage />
           </ProtectedRoute>
         }
       />
