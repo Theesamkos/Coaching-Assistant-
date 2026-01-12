@@ -20,6 +20,7 @@ import TeamAnalyticsPage from '@/pages/coach/TeamAnalyticsPage'
 import AnnouncementsPage from '@/pages/coach/AnnouncementsPage'
 import CalendarPage from '@/pages/coach/CalendarPage'
 import AnnouncementsFeedPage from '@/pages/player/AnnouncementsFeedPage'
+import PracticePlansPage from '@/pages/coach/PracticePlansPage'
 import DrillLibrary from '@/pages/drills/DrillLibrary'
 import ProtectedRoute from '@/components/routing/ProtectedRoute'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -189,6 +190,15 @@ function AppRoutes() {
         element={
           <ProtectedRoute requiredRole="coach">
             <CalendarPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/coach/plans"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <PracticePlansPage />
           </ProtectedRoute>
         }
       />

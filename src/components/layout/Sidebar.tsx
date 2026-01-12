@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
   { name: 'My Coaches', path: '/player/coaches', icon: Users, roles: ['player'] },
   { name: 'Drills', path: '/drills', icon: BookOpen, roles: ['coach', 'player'] },
   { name: 'Practices', path: '/coach/practices', icon: Calendar, roles: ['coach'] },
-  { name: 'Practice Plans', path: '/plans', icon: ClipboardList, roles: ['coach'] },
+  { name: 'Practice Plans', path: '/coach/plans', icon: ClipboardList, roles: ['coach'] },
   { name: 'Library', path: '/library', icon: Library, roles: ['coach', 'player'] },
   { name: 'Files', path: '/files', icon: FolderOpen, roles: ['coach', 'player'] },
 ]
