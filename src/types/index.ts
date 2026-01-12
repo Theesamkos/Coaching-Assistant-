@@ -510,5 +510,99 @@ export interface PhotoUploadResult {
   error?: string
 }
 
+// ============================================================================
+// COMMUNICATION CENTER TYPES
+// ============================================================================
+
+// Announcement Priority
+export type AnnouncementPriority = 'low' | 'normal' | 'high' | 'urgent'
+
+// Announcement Target Audience
+export type AnnouncementAudience = 'all' | 'team' | 'individual'
+
+// Announcement
+export interface Announcement {
+  id: string
+  coachId: string
+  title: string
+  content: string
+  priority: AnnouncementPriority
+  targetAudience: AnnouncementAudience
+  targetTeamId: string | null
+  targetPlayerId: string | null
+  relatedPracticeId: string | null
+  isPinned: boolean
+  publishedAt: Date
+  expiresAt: Date | null
+  createdAt: Date
+  updatedAt: Date
+  // Populated relationships
+  coach?: User
+  targetTeam?: Team
+  targetPlayer?: User
+  relatedPractice?: Practice
+  readCount?: number
+  isRead?: boolean
+}
+
+// Announcement Form Data
+export interface AnnouncementFormData {
+  title: string
+  content: string
+  priority: AnnouncementPriority
+  targetAudience: AnnouncementAudience
+  targetTeamId?: string
+  targetPlayerId?: string
+  relatedPracticeId?: string
+  isPinned?: boolean
+  expiresAt?: Date
+}
+
+// Announcement Read
+export interface AnnouncementRead {
+  id: string
+  announcementId: string
+  playerId: string
+  readAt: Date
+  createdAt: Date
+}
+
+// Team Message
+export interface TeamMessage {
+  id: string
+  authorId: string
+  teamId: string | null
+  coachId: string | null
+  content: string
+  isCoachOnly: boolean
+  createdAt: Date
+  updatedAt: Date
+  // Populated relationships
+  author?: User
+  team?: Team
+  reactions?: MessageReaction[]
+}
+
+// Team Message Form Data
+export interface TeamMessageFormData {
+  content: string
+  teamId?: string
+  coachId?: string
+  isCoachOnly?: boolean
+}
+
+// Message Reaction
+export type ReactionType = 'like' | 'celebrate' | 'support' | 'fire'
+
+export interface MessageReaction {
+  id: string
+  messageId: string
+  userId: string
+  reaction: ReactionType
+  createdAt: Date
+  // Populated relationships
+  user?: User
+}
+
 
 
