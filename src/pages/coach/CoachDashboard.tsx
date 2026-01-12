@@ -66,7 +66,7 @@ export default function CoachDashboard() {
   const [todaysPractices, setTodaysPractices] = useState<Practice[]>([])
   const [recentActivity, setRecentActivity] = useState<ActivityItem[]>([])
   const [actionItems, setActionItems] = useState<ActionItem[]>([])
-  const [playersWithStats, setPlayersWithStats] = useState<Array<EnhancedPlayer & { stats?: PlayerStatistics }>>([])
+  const [playersWithStats, setPlayersWithStats] = useState<Array<EnhancedPlayer & { stats?: any }>>([])
 
   useEffect(() => {
     if (userProfile?.id) {
@@ -84,9 +84,10 @@ export default function CoachDashboard() {
       const activePlayers = players?.filter((p) => p.status === 'accepted') || []
       
       // Load enhanced players with stats
+      let playersWithStatsData: Array<EnhancedPlayer & { stats?: any }> = []
       const { data: enhancedPlayers } = await playerManagementService.getCoachPlayersEnhanced(userProfile.id)
       if (enhancedPlayers) {
-        const playersWithStatsData = await Promise.all(
+        playersWithStatsData = await Promise.all(
           enhancedPlayers.map(async (player) => {
             const { data: stats } = await statisticsService.getPlayerStatistics(player.id)
             return { ...player, stats }
@@ -201,7 +202,7 @@ export default function CoachDashboard() {
   function generateActionItems(
     players: CoachPlayer[], 
     upcoming: Practice[],
-    playersWithStats: Array<EnhancedPlayer & { stats?: PlayerStatistics }>
+    playersWithStats: Array<EnhancedPlayer & { stats?: any }>
   ) {
     const items: ActionItem[] = []
     
