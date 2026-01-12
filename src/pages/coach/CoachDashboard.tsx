@@ -519,12 +519,12 @@ export default function CoachDashboard() {
             </button>
 
             <button
-              onClick={() => navigate('/coach/practices/create')}
+              onClick={() => navigate('/coach/calendar')}
               className="w-full bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-emerald-500/20 hover:shadow-xl"
             >
               <Calendar className="mb-2" size={24} />
-              <h3 className="text-lg font-semibold mb-1">Schedule Practice</h3>
-              <p className="text-emerald-100 text-sm">Plan your next session</p>
+              <h3 className="text-lg font-semibold mb-1">Calendar View</h3>
+              <p className="text-emerald-100 text-sm">Visual practice scheduling</p>
             </button>
 
             <button

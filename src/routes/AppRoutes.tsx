@@ -18,6 +18,7 @@ import ProgressTrackingPage from '@/pages/coach/ProgressTrackingPage'
 import PlayerProgressPage from '@/pages/coach/PlayerProgressPage'
 import TeamAnalyticsPage from '@/pages/coach/TeamAnalyticsPage'
 import AnnouncementsPage from '@/pages/coach/AnnouncementsPage'
+import CalendarPage from '@/pages/coach/CalendarPage'
 import AnnouncementsFeedPage from '@/pages/player/AnnouncementsFeedPage'
 import DrillLibrary from '@/pages/drills/DrillLibrary'
 import ProtectedRoute from '@/components/routing/ProtectedRoute'
@@ -179,6 +180,15 @@ function AppRoutes() {
         element={
           <ProtectedRoute requiredRole="coach">
             <AnnouncementsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/coach/calendar"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <CalendarPage />
           </ProtectedRoute>
         }
       />
