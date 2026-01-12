@@ -200,7 +200,9 @@ export const practiceService = {
           drillId: item.drill_id,
           orderIndex: item.order_index,
           customNotes: item.custom_notes,
+          completed: item.completed || false,
           createdAt: new Date(item.created_at),
+          updatedAt: new Date(item.updated_at || item.created_at),
           drill: item.drill ? {
             id: item.drill.id,
             coachId: item.drill.coach_id,
@@ -468,6 +470,43 @@ export const practiceService = {
       }
 
       return { data: practicePlayer, error: null }
+    } catch (error: any) {
+      return { data: null, error: { code: 'unknown_error', message: error.message } }
+    }
+  },
+
+  /**
+   * Mark a drill as completed in a practice
+   */
+  async markDrillCompleted(
+    practiceId: string,
+    drillId: string,
+    completed: boolean = true
+  ): Promise<ApiResponse<PracticeDrill>> {
+    try {
+      const { data, error } = await supabase
+        .from('practice_drills')
+        .update({ completed })
+        .eq('practice_id', practiceId)
+        .eq('drill_id', drillId)
+        .select()
+        .single()
+
+      if (error) {
+        return { data: null, error: { code: error.code, message: error.message } }
+      }
+
+      const practiceDrill: PracticeDrill = {
+        id: data.id,
+        practiceId: data.practice_id,
+        drillId: data.drill_id,
+        orderIndex: data.order_index,
+        completed: data.completed,
+        createdAt: new Date(data.created_at),
+        updatedAt: new Date(data.updated_at),
+      }
+
+      return { data: practiceDrill, error: null }
     } catch (error: any) {
       return { data: null, error: { code: 'unknown_error', message: error.message } }
     }

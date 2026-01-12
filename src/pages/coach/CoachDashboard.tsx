@@ -127,7 +127,7 @@ export default function CoachDashboard() {
           label="Team Progress"
           value="--"
           color="amber"
-          onClick={() => navigate('/progress')}
+          onClick={() => navigate('/coach/progress')}
         />
       </div>
 

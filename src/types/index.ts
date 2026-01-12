@@ -130,7 +130,9 @@ export interface PracticeDrill {
   drillId: string
   orderIndex: number
   customNotes: string | null
+  completed: boolean
   createdAt: Date
+  updatedAt: Date
   // Populated relationships (when joined)
   drill?: Drill
   practice?: Practice
