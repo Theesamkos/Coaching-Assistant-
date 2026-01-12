@@ -22,6 +22,7 @@ import {
   Zap,
   BarChart3,
   Target,
+  MessageSquare,
 } from 'lucide-react'
 import { CoachPlayer, Practice, Drill, EnhancedPlayer, PlayerStatistic } from '@/types'
 import { format, isToday, isTomorrow, isPast, differenceInDays } from 'date-fns'
