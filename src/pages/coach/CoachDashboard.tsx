@@ -544,6 +544,15 @@ export default function CoachDashboard() {
               <h3 className="text-lg font-semibold mb-1">Team Analytics</h3>
               <p className="text-amber-100 text-sm">View performance insights</p>
             </button>
+
+            <button
+              onClick={() => navigate('/coach/announcements')}
+              className="w-full bg-gradient-to-br from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-indigo-500/20 hover:shadow-xl"
+            >
+              <MessageSquare className="mb-2" size={24} />
+              <h3 className="text-lg font-semibold mb-1">Announcements</h3>
+              <p className="text-indigo-100 text-sm">Post updates to your team</p>
+            </button>
           </div>
 
           {/* Top Performers */}

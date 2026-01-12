@@ -17,6 +17,8 @@ import PracticeDetailPage from '@/pages/coach/PracticeDetailPage'
 import ProgressTrackingPage from '@/pages/coach/ProgressTrackingPage'
 import PlayerProgressPage from '@/pages/coach/PlayerProgressPage'
 import TeamAnalyticsPage from '@/pages/coach/TeamAnalyticsPage'
+import AnnouncementsPage from '@/pages/coach/AnnouncementsPage'
+import AnnouncementsFeedPage from '@/pages/player/AnnouncementsFeedPage'
 import DrillLibrary from '@/pages/drills/DrillLibrary'
 import ProtectedRoute from '@/components/routing/ProtectedRoute'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -168,6 +170,25 @@ function AppRoutes() {
         element={
           <ProtectedRoute requiredRole="coach">
             <TeamAnalyticsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/coach/announcements"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <AnnouncementsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Player Routes */}
+      <Route
+        path="/player/announcements"
+        element={
+          <ProtectedRoute requiredRole="player">
+            <AnnouncementsFeedPage />
           </ProtectedRoute>
         }
       />
