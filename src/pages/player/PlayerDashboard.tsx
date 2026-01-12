@@ -21,7 +21,7 @@ import {
   Eye,
   AlertCircle,
 } from 'lucide-react'
-import { CoachPlayer, PracticeWithDetails, PlayerStatistics, CoachNote } from '@/types'
+import { CoachPlayer, PracticeWithDetails, PlayerStatistic, CoachNote } from '@/types'
 import { format, isToday, isTomorrow, differenceInDays } from 'date-fns'
 
 export default function PlayerDashboard() {

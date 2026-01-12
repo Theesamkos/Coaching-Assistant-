@@ -23,7 +23,7 @@ import {
   BarChart3,
   Target,
 } from 'lucide-react'
-import { CoachPlayer, Practice, Drill, EnhancedPlayer, PlayerStatistics } from '@/types'
+import { CoachPlayer, Practice, Drill, EnhancedPlayer, PlayerStatistic } from '@/types'
 import { format, isToday, isTomorrow, isPast, differenceInDays } from 'date-fns'
 
 interface ActivityItem {
