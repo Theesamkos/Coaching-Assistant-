@@ -12,7 +12,11 @@ import PlayerDetailPage from '@/pages/coach/PlayerDetailPage'
 import InvitePlayerPage from '@/pages/coach/InvitePlayerPage'
 import PracticesPage from '@/pages/coach/PracticesPage'
 import CreatePracticePage from '@/pages/coach/CreatePracticePage'
+import EditPracticePage from '@/pages/coach/EditPracticePage'
 import PracticeDetailPage from '@/pages/coach/PracticeDetailPage'
+import ProgressTrackingPage from '@/pages/coach/ProgressTrackingPage'
+import PlayerProgressPage from '@/pages/coach/PlayerProgressPage'
+import TeamAnalyticsPage from '@/pages/coach/TeamAnalyticsPage'
 import DrillLibrary from '@/pages/drills/DrillLibrary'
 import ProtectedRoute from '@/components/routing/ProtectedRoute'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -124,10 +128,46 @@ function AppRoutes() {
       />
 
       <Route
+        path="/coach/practices/:id/edit"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <EditPracticePage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
         path="/coach/practices/:id"
         element={
           <ProtectedRoute requiredRole="coach">
             <PracticeDetailPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/coach/progress"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <ProgressTrackingPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/coach/progress/:id"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <PlayerProgressPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/coach/analytics"
+        element={
+          <ProtectedRoute requiredRole="coach">
+            <TeamAnalyticsPage />
           </ProtectedRoute>
         }
       />

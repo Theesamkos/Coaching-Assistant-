@@ -32,6 +32,7 @@ export default function PracticeDetailPage() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<TabType>('overview')
   const [updatingAttendance, setUpdatingAttendance] = useState<string | null>(null)
+  const [updatingDrill, setUpdatingDrill] = useState<string | null>(null)
 
   useEffect(() => {
     if (id && userProfile?.id) {
@@ -96,6 +97,25 @@ export default function PracticeDetailPage() {
       navigate('/coach/practices')
     } else {
       alert('Failed to delete practice')
+    }
+  }
+
+  const handleToggleDrillCompletion = async (drillId: string, currentStatus: boolean) => {
+    if (!id) return
+
+    setUpdatingDrill(drillId)
+    try {
+      const { error } = await practiceService.markDrillCompleted(id, drillId, !currentStatus)
+      if (!error) {
+        await loadPracticeData()
+      } else {
+        alert('Failed to update drill completion')
+      }
+    } catch (error) {
+      console.error('Error updating drill completion:', error)
+      alert('Failed to update drill completion')
+    } finally {
+      setUpdatingDrill(null)
     }
   }
 
@@ -271,7 +291,13 @@ export default function PracticeDetailPage() {
 
         <div className="p-6">
           {activeTab === 'overview' && <OverviewTab practice={practice} />}
-          {activeTab === 'drills' && <DrillsTab practice={practice} />}
+          {activeTab === 'drills' && (
+            <DrillsTab
+              practice={practice}
+              onToggleCompletion={handleToggleDrillCompletion}
+              updatingDrillId={updatingDrill}
+            />
+          )}
           {activeTab === 'attendance' && (
             <AttendanceTab
               practice={practice}
@@ -337,7 +363,13 @@ function OverviewTab({ practice }: { practice: PracticeWithDetails }) {
 }
 
 // Drills Tab
-function DrillsTab({ practice }: { practice: PracticeWithDetails }) {
+interface DrillsTabProps {
+  practice: PracticeWithDetails
+  onToggleCompletion: (drillId: string, currentStatus: boolean) => void
+  updatingDrillId: string | null
+}
+
+function DrillsTab({ practice, onToggleCompletion, updatingDrillId }: DrillsTabProps) {
   if (!practice.drills || practice.drills.length === 0) {
     return (
       <div className="text-center py-12">
@@ -346,29 +378,77 @@ function DrillsTab({ practice }: { practice: PracticeWithDetails }) {
     )
   }
 
+  const completedCount = practice.drills.filter((d) => d.completed).length
+  const totalCount = practice.drills.length
+
   return (
-    <div className="space-y-3">
-      {practice.drills.map((practiceDrill, index) => (
-        <div key={practiceDrill.id} className="bg-slate-700 rounded-lg p-4 border border-slate-600">
-          <div className="flex items-start gap-4">
-            <span className="text-2xl font-bold text-slate-500">#{index + 1}</span>
-            <div className="flex-1">
-              <h4 className="text-lg font-semibold text-white mb-1">
-                {practiceDrill.drill?.title}
-              </h4>
-              {practiceDrill.drill?.description && (
-                <p className="text-slate-400 text-sm mb-2">{practiceDrill.drill.description}</p>
-              )}
-              <div className="flex gap-4 text-sm text-slate-300">
-                {practiceDrill.drill?.durationMinutes && (
-                  <span>⏱️ {practiceDrill.drill.durationMinutes} min</span>
+    <div className="space-y-4">
+      {/* Progress Summary */}
+      <div className="bg-slate-700 rounded-lg p-4 border border-slate-600">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-slate-300 font-medium">Drill Completion</span>
+          <span className="text-white font-bold">
+            {completedCount} / {totalCount}
+          </span>
+        </div>
+        <div className="w-full bg-slate-600 rounded-full h-2">
+          <div
+            className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${(completedCount / totalCount) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Drills List */}
+      <div className="space-y-3">
+        {practice.drills.map((practiceDrill, index) => (
+          <div
+            key={practiceDrill.id}
+            className={`bg-slate-700 rounded-lg p-4 border transition-all ${
+              practiceDrill.completed
+                ? 'border-emerald-500/50 bg-emerald-500/5'
+                : 'border-slate-600'
+            }`}
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl font-bold text-slate-500">#{index + 1}</span>
+                <button
+                  onClick={() =>
+                    onToggleCompletion(practiceDrill.drillId, practiceDrill.completed || false)
+                  }
+                  disabled={updatingDrillId === practiceDrill.drillId}
+                  className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-all ${
+                    practiceDrill.completed
+                      ? 'bg-emerald-500 border-emerald-500'
+                      : 'border-slate-500 hover:border-emerald-500'
+                  } ${updatingDrillId === practiceDrill.drillId ? 'opacity-50' : ''}`}
+                >
+                  {practiceDrill.completed && <CheckCircleIcon className="h-4 w-4 text-white" />}
+                </button>
+              </div>
+              <div className="flex-1">
+                <h4
+                  className={`text-lg font-semibold mb-1 ${
+                    practiceDrill.completed ? 'text-slate-400 line-through' : 'text-white'
+                  }`}
+                >
+                  {practiceDrill.drill?.title}
+                </h4>
+                {practiceDrill.drill?.description && (
+                  <p className="text-slate-400 text-sm mb-2">{practiceDrill.drill.description}</p>
                 )}
-                {practiceDrill.drill?.category && <span>📁 {practiceDrill.drill.category}</span>}
+                <div className="flex gap-4 text-sm text-slate-300">
+                  {practiceDrill.drill?.durationMinutes && (
+                    <span>⏱️ {practiceDrill.drill.durationMinutes} min</span>
+                  )}
+                  {practiceDrill.drill?.category && <span>📁 {practiceDrill.drill.category}</span>}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }
