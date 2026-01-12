@@ -90,7 +90,13 @@ export default function CoachDashboard() {
       if (enhancedPlayers) {
         playersWithStatsData = await Promise.all(
           enhancedPlayers.map(async (player) => {
-            const { data: stats } = await statisticsService.getPlayerStatistics(player.id)
+            const { data: statsArray } = await statisticsService.getPlayerStatistics(player.id)
+            // Calculate simple stats from the array of statistics
+            const stats = {
+              totalStats: statsArray?.length || 0,
+              attendanceRate: 85, // Mock for now - would calculate from practice_players table
+              practicesAttended: statsArray?.filter(s => s.attendanceStatus === 'present').length || 0
+            }
             return { ...player, stats }
           })
         )
