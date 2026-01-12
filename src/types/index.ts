@@ -604,5 +604,216 @@ export interface MessageReaction {
   user?: User
 }
 
+// ============================================================================
+// PRACTICE PLANS SYSTEM TYPES
+// ============================================================================
+
+// Practice Plan Category
+export interface PracticePlanCategory {
+  id: string
+  coachId: string
+  name: string
+  description: string | null
+  color: string | null
+  icon: string | null
+  isSystem: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface PracticePlanCategoryFormData {
+  name: string
+  description?: string
+  color?: string
+  icon?: string
+}
+
+// Practice Plan
+export type AgeGroup = 'U10' | 'U12' | 'U14' | 'U16' | 'U18' | 'Adult' | 'All Ages'
+export type SkillLevelPlan = 'beginner' | 'intermediate' | 'advanced' | 'elite' | 'mixed'
+export type PlanPermission = 'view' | 'copy' | 'edit'
+
+export interface PracticePlan {
+  id: string
+  coachId: string
+  
+  // Basic Info
+  title: string
+  description: string | null
+  
+  // Metadata
+  categoryId: string | null
+  tags: string[]
+  
+  // Target Audience
+  ageGroup: AgeGroup | null
+  skillLevel: SkillLevelPlan | null
+  teamSizeMin: number | null
+  teamSizeMax: number | null
+  
+  // Duration & Structure
+  totalDurationMinutes: number | null
+  
+  // Objectives & Notes
+  objectives: string[]
+  equipmentNeeded: string[]
+  coachingNotes: string | null
+  safetyNotes: string | null
+  
+  // Organization
+  folderPath: string | null
+  
+  // Sharing
+  isPublic: boolean
+  isTemplate: boolean
+  
+  // Usage Stats
+  timesUsed: number
+  lastUsedAt: Date | null
+  
+  // Timestamps
+  createdAt: Date
+  updatedAt: Date
+  
+  // Populated relationships
+  category?: PracticePlanCategory
+  coach?: User
+  sections?: PracticePlanSection[]
+  shares?: PracticePlanShare[]
+  isFavorite?: boolean
+}
+
+export interface PracticePlanFormData {
+  title: string
+  description?: string
+  categoryId?: string
+  tags?: string[]
+  ageGroup?: AgeGroup
+  skillLevel?: SkillLevelPlan
+  teamSizeMin?: number
+  teamSizeMax?: number
+  totalDurationMinutes?: number
+  objectives?: string[]
+  equipmentNeeded?: string[]
+  coachingNotes?: string
+  safetyNotes?: string
+  folderPath?: string
+  isPublic?: boolean
+  isTemplate?: boolean
+}
+
+// Practice Plan Section
+export interface PracticePlanSection {
+  id: string
+  planId: string
+  title: string
+  description: string | null
+  durationMinutes: number | null
+  orderIndex: number
+  color: string | null
+  icon: string | null
+  createdAt: Date
+  updatedAt: Date
+  // Populated relationships
+  drills?: PracticePlanDrill[]
+}
+
+export interface PracticePlanSectionFormData {
+  title: string
+  description?: string
+  durationMinutes?: number
+  orderIndex: number
+  color?: string
+  icon?: string
+}
+
+// Practice Plan Drill (within a section)
+export interface PracticePlanDrill {
+  id: string
+  sectionId: string
+  drillId: string | null // reference to existing drill or null if custom
+  
+  // Custom drill info (if not referencing existing drill)
+  customTitle: string | null
+  customDescription: string | null
+  customInstructions: string | null
+  
+  durationMinutes: number | null
+  orderIndex: number
+  
+  // Drill-specific notes
+  coachingPoints: string | null
+  variations: string | null
+  
+  // Player organization
+  playerCountMin: number | null
+  playerCountMax: number | null
+  groupsCount: number | null
+  
+  createdAt: Date
+  updatedAt: Date
+  
+  // Populated relationships
+  drill?: Drill
+}
+
+export interface PracticePlanDrillFormData {
+  drillId?: string
+  customTitle?: string
+  customDescription?: string
+  customInstructions?: string
+  durationMinutes?: number
+  orderIndex: number
+  coachingPoints?: string
+  variations?: string
+  playerCountMin?: number
+  playerCountMax?: number
+  groupsCount?: number
+}
+
+// Practice Plan Share
+export interface PracticePlanShare {
+  id: string
+  planId: string
+  sharedWithCoachId: string
+  sharedByCoachId: string
+  permission: PlanPermission
+  sharedAt: Date
+  lastAccessedAt: Date | null
+  // Populated relationships
+  sharedWithCoach?: User
+  sharedByCoach?: User
+  plan?: PracticePlan
+}
+
+export interface PracticePlanShareFormData {
+  sharedWithCoachId: string
+  permission: PlanPermission
+}
+
+// Practice Plan Favorite
+export interface PracticePlanFavorite {
+  id: string
+  planId: string
+  coachId: string
+  createdAt: Date
+}
+
+// Practice Plan with full details
+export interface PracticePlanWithDetails extends PracticePlan {
+  sections: (PracticePlanSection & { drills: (PracticePlanDrill & { drill?: Drill })[] })[]
+}
+
+// Practice Plan Filters
+export interface PracticePlanFilters {
+  categoryId?: string
+  tags?: string[]
+  ageGroup?: AgeGroup
+  skillLevel?: SkillLevelPlan
+  isPublic?: boolean
+  isFavorite?: boolean
+  folderPath?: string
+  searchTerm?: string
+}
 
 
