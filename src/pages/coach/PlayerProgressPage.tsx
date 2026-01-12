@@ -6,7 +6,7 @@ import { playerManagementService } from '@/services/player-management.service'
 import { practiceService } from '@/services/practice.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Button from '@/components/ui/Button'
-import { EnhancedPlayer, PlayerStatistics, PracticeWithDetails } from '@/types'
+import { EnhancedPlayer, PlayerStatistic, PracticeWithDetails } from '@/types'
 import {
   ArrowLeftIcon,
   ChartBarIcon,

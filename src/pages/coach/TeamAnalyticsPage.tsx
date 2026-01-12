@@ -7,7 +7,7 @@ import { practiceService } from '@/services/practice.service'
 import { teamService } from '@/services/team.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Button from '@/components/ui/Button'
-import { EnhancedPlayer, PlayerStatistics, Practice, Team } from '@/types'
+import { EnhancedPlayer, PlayerStatistic, Practice, Team } from '@/types'
 import {
   ChartBarIcon,
   TrophyIcon,

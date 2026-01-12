@@ -5,7 +5,7 @@ import { statisticsService } from '@/services/statistics.service'
 import { playerManagementService } from '@/services/player-management.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Button from '@/components/ui/Button'
-import { EnhancedPlayer, PlayerStatistics } from '@/types'
+import { EnhancedPlayer, PlayerStatistic } from '@/types'
 import {
   ChartBarIcon,
   TrophyIcon,

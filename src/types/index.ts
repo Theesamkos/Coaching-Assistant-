@@ -361,7 +361,7 @@ export interface TeamPlayer {
 }
 
 // Coach Notes Types
-export type NoteType = 'general' | 'performance' | 'behavioral' | 'improvement' | 'goals' | 'medical'
+export type NoteType = 'general' | 'technical' | 'physical' | 'mental' | 'game'
 
 export interface CoachNote {
   id: string
