@@ -126,7 +126,10 @@ export default function CreatePracticePage() {
       // Add drills to practice
       if (selectedDrills.length > 0) {
         for (let i = 0; i < selectedDrills.length; i++) {
-          await practiceService.addDrillToPractice(practice.id, selectedDrills[i], i)
+          await practiceService.addDrillToPractice(practice.id, {
+            drillId: selectedDrills[i],
+            orderIndex: i,
+          })
         }
       }
 

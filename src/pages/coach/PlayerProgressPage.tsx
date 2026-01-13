@@ -6,7 +6,7 @@ import { playerManagementService } from '@/services/player-management.service'
 import { practiceService } from '@/services/practice.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Button from '@/components/ui/Button'
-import { EnhancedPlayer, PlayerStatistic, PracticeWithDetails } from '@/types'
+import { EnhancedPlayer, PlayerStatistic, PracticeWithDetails, PlayerStatsAggregate } from '@/types'
 import {
   ArrowLeftIcon,
   ChartBarIcon,
@@ -26,7 +26,7 @@ export default function PlayerProgressPage() {
   const navigate = useNavigate()
 
   const [player, setPlayer] = useState<EnhancedPlayer | null>(null)
-  const [stats, setStats] = useState<PlayerStatistics | null>(null)
+  const [stats, setStats] = useState<PlayerStatsAggregate | null>(null)
   const [recentPractices, setRecentPractices] = useState<PracticeWithDetails[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -51,16 +51,26 @@ export default function PlayerProgressPage() {
         setPlayer(playerData)
 
         // Load stats
-        const { data: statsData } = await statisticsService.getPlayerStatistics(id)
+        const { data: statsData } = await statisticsService.getPlayerStatsAggregate(id)
         setStats(statsData)
 
         // Load recent practices with this player
         const { data: practicesData } = await practiceService.getPractices(userProfile.id, {})
         if (practicesData) {
-          // Filter practices that include this player
-          const playerPractices = practicesData.filter((practice) =>
-            practice.players?.some((p) => p.playerId === id)
+          // Load full details for each practice to check if player is included
+          const practicesWithDetails = await Promise.all(
+            practicesData.map(async (practice) => {
+              const { data: details } = await practiceService.getPracticeWithDetails(practice.id)
+              return details
+            })
           )
+          
+          // Filter practices that include this player
+          const playerPractices = practicesWithDetails
+            .filter((practice): practice is PracticeWithDetails => practice !== null)
+            .filter((practice) =>
+              practice.players?.some((p) => p.playerId === id)
+            )
           setRecentPractices(playerPractices.slice(0, 10))
         }
       }

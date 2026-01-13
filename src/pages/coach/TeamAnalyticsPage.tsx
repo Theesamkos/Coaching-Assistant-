@@ -7,7 +7,7 @@ import { practiceService } from '@/services/practice.service'
 import { teamService } from '@/services/team.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Button from '@/components/ui/Button'
-import { EnhancedPlayer, PlayerStatistic, Practice, Team } from '@/types'
+import { EnhancedPlayer, PlayerStatistic, Practice, Team, PlayerStatsAggregate, InvitationStatus } from '@/types'
 import {
   ChartBarIcon,
   TrophyIcon,
@@ -19,7 +19,8 @@ import {
 } from '@heroicons/react/24/outline'
 
 interface PlayerWithStats extends EnhancedPlayer {
-  stats?: PlayerStatistics
+  stats?: PlayerStatsAggregate
+  status?: InvitationStatus
 }
 
 export default function TeamAnalyticsPage() {
@@ -51,7 +52,7 @@ export default function TeamAnalyticsPage() {
       if (playersData) {
         const playersWithStats = await Promise.all(
           playersData.map(async (player) => {
-            const { data: stats } = await statisticsService.getPlayerStatistics(player.id)
+            const { data: stats } = await statisticsService.getPlayerStatsAggregate(player.id)
             return { ...player, stats }
           })
         )
@@ -88,7 +89,7 @@ export default function TeamAnalyticsPage() {
   const filteredPlayers =
     selectedTeam === 'all'
       ? players
-      : players.filter((p) => p.teams?.some((t) => t.id === selectedTeam))
+      : players.filter((p) => p.teams?.some((t) => t.teamId === selectedTeam))
 
   // Calculate team statistics
   const totalPlayers = filteredPlayers.length

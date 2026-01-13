@@ -9,6 +9,7 @@ import {
   PracticeWithDetails,
   ApiResponse,
   AttendanceStatus,
+  PracticeStatus,
   Drill,
   User 
 } from '@/types'
@@ -344,7 +345,9 @@ export const practiceService = {
         drillId: data.drill_id,
         orderIndex: data.order_index,
         customNotes: data.custom_notes,
+        completed: data.completed || false,
         createdAt: new Date(data.created_at),
+        updatedAt: new Date(data.updated_at),
       }
 
       return { data: practiceDrill, error: null }
@@ -501,12 +504,59 @@ export const practiceService = {
         practiceId: data.practice_id,
         drillId: data.drill_id,
         orderIndex: data.order_index,
+        customNotes: data.custom_notes,
         completed: data.completed,
         createdAt: new Date(data.created_at),
         updatedAt: new Date(data.updated_at),
       }
 
       return { data: practiceDrill, error: null }
+    } catch (error: any) {
+      return { data: null, error: { code: 'unknown_error', message: error.message } }
+    }
+  },
+
+  /**
+   * Update player attendance by practiceId and playerId (helper method)
+   */
+  async updatePlayerAttendance(
+    practiceId: string,
+    playerId: string,
+    status: AttendanceStatus,
+    notes?: string
+  ): Promise<ApiResponse<PracticePlayer>> {
+    try {
+      // Find the practice_player relationship
+      const { data: practicePlayer, error: findError } = await supabase
+        .from('practice_players')
+        .select('id')
+        .eq('practice_id', practiceId)
+        .eq('player_id', playerId)
+        .single()
+
+      if (findError || !practicePlayer) {
+        return { 
+          data: null, 
+          error: { code: 'not_found', message: 'Practice player relationship not found' } 
+        }
+      }
+
+      // Update the attendance
+      return await this.updateAttendance(practicePlayer.id, status, notes)
+    } catch (error: any) {
+      return { data: null, error: { code: 'unknown_error', message: error.message } }
+    }
+  },
+
+  /**
+   * Update practice status (helper method)
+   */
+  async updatePracticeStatus(
+    practiceId: string,
+    status: PracticeStatus
+  ): Promise<ApiResponse<Practice>> {
+    try {
+      return await this.updatePractice(practiceId, { status })
     } catch (error: any) {
       return { data: null, error: { code: 'unknown_error', message: error.message } }
     }
