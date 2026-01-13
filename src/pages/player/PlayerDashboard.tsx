@@ -21,7 +21,7 @@ import {
   Eye,
   AlertCircle,
 } from 'lucide-react'
-import { CoachPlayer, PracticeWithDetails, PlayerStatistic, CoachNote } from '@/types'
+import { CoachPlayer, PracticeWithDetails, PlayerStatistic, CoachNote, PlayerStatsAggregate } from '@/types'
 import { format, isToday, isTomorrow, differenceInDays } from 'date-fns'
 
 export default function PlayerDashboard() {
@@ -30,7 +30,7 @@ export default function PlayerDashboard() {
   const [loading, setLoading] = useState(true)
   
   // Stats
-  const [stats, setStats] = useState<PlayerStatistics | null>(null)
+  const [stats, setStats] = useState<PlayerStatsAggregate | null>(null)
   const [dashboardStats, setDashboardStats] = useState({
     coaches: 0,
     upcomingPractices: 0,
@@ -72,12 +72,21 @@ export default function PlayerDashboard() {
       setUpcomingPractices(upcoming.slice(0, 4))
 
       // Load player statistics
-      const { data: playerStats } = await statisticsService.getPlayerStatistics(userProfile.id)
+      const { data: playerStats } = await statisticsService.getPlayerStatsAggregate(userProfile.id)
       setStats(playerStats)
 
       // Load recent feedback (notes visible to player)
-      const { data: notes } = await noteService.getPlayerNotes(userProfile.id)
-      const visibleNotes = notes?.filter(note => note.isVisibleToPlayer).slice(0, 5) || []
+      // Get notes from all coaches
+      const allNotes: CoachNote[] = []
+      if (coaches && coaches.length > 0) {
+        for (const coach of coaches) {
+          if (coach.coachId) {
+            const { data: notes } = await noteService.getPlayerNotes(userProfile.id, coach.coachId)
+            if (notes) allNotes.push(...notes)
+          }
+        }
+      }
+      const visibleNotes = allNotes.filter(note => note.isVisibleToPlayer).slice(0, 5)
       setRecentFeedback(visibleNotes)
 
       // Count completed drills from practices

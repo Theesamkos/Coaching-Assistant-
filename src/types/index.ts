@@ -93,7 +93,7 @@ export interface DrillFormData {
 }
 
 // Practice Types
-export type PracticeStatus = 'scheduled' | 'completed' | 'cancelled'
+export type PracticeStatus = 'scheduled' | 'in_progress' | 'completed' | 'cancelled'
 
 export interface Practice {
   id: string
@@ -145,7 +145,7 @@ export interface PracticeDrillFormData {
 }
 
 // Practice-Player Relationship (Attendance)
-export type AttendanceStatus = 'invited' | 'confirmed' | 'attended' | 'missed' | 'excused'
+export type AttendanceStatus = 'invited' | 'confirmed' | 'attended' | 'missed' | 'excused' | 'present' | 'absent' | 'late'
 
 export interface PracticePlayer {
   id: string
@@ -205,7 +205,7 @@ export interface PlayerFilters {
 // Practice with full drill and player details
 export interface PracticeWithDetails extends Practice {
   drills: (PracticeDrill & { drill: Drill })[]
-  players: (PracticePlayer & { player: User })[]
+  players: (PracticePlayer & { player: User & { position?: string } })[]
 }
 
 // Coach with their players
@@ -475,7 +475,9 @@ export interface PlayerStatsAggregate {
   totalGoals: number
   totalAssists: number
   totalPoints: number
+  totalDrillsCompleted?: number
   skillAverages: SkillRatings
+  currentStreak?: number // Days of consecutive practice attendance
 }
 
 // Enhanced CoachPlayer with invitation management

@@ -161,20 +161,23 @@ export default function EditPracticePage() {
       // Update drills - remove all existing and add new ones
       if (practice?.drills) {
         for (const practiceDrill of practice.drills) {
-          await practiceService.removeDrillFromPractice(id, practiceDrill.drillId)
+          await practiceService.removeDrillFromPractice(practiceDrill.id)
         }
       }
 
       if (selectedDrills.length > 0) {
         for (let i = 0; i < selectedDrills.length; i++) {
-          await practiceService.addDrillToPractice(id, selectedDrills[i], i)
+          await practiceService.addDrillToPractice(id, {
+            drillId: selectedDrills[i],
+            orderIndex: i,
+          })
         }
       }
 
       // Update players - remove all existing and add new ones
       if (practice?.players) {
         for (const practicePlayer of practice.players) {
-          await practiceService.removePlayerFromPractice(id, practicePlayer.playerId)
+          await practiceService.removePlayerFromPractice(practicePlayer.id)
         }
       }
 

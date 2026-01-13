@@ -5,7 +5,7 @@ import { statisticsService } from '@/services/statistics.service'
 import { playerManagementService } from '@/services/player-management.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Button from '@/components/ui/Button'
-import { EnhancedPlayer, PlayerStatistic } from '@/types'
+import { EnhancedPlayer, PlayerStatistic, PlayerStatsAggregate } from '@/types'
 import {
   ChartBarIcon,
   TrophyIcon,
@@ -19,7 +19,7 @@ import {
 type TimeRange = '7d' | '30d' | '90d' | 'all'
 
 interface PlayerWithStats extends EnhancedPlayer {
-  stats?: PlayerStatistics
+  stats?: PlayerStatsAggregate
 }
 
 export default function ProgressTrackingPage() {
@@ -56,7 +56,7 @@ export default function ProgressTrackingPage() {
         // Load stats for each player
         const playersWithStats = await Promise.all(
           playersData.map(async (player) => {
-            const { data: stats } = await statisticsService.getPlayerStatistics(player.id)
+            const { data: stats } = await statisticsService.getPlayerStatsAggregate(player.id)
             return {
               ...player,
               stats,

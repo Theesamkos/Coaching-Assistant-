@@ -1,5 +1,5 @@
 import { supabase } from '@/config/supabase'
-import { Team, TeamFormData, TeamPlayer, ApiResponse } from '@/types'
+import { Team, TeamFormData, TeamPlayer, User, ApiResponse } from '@/types'
 
 export const teamService = {
   /**
@@ -286,6 +286,28 @@ export const teamService = {
       }
 
       return { data: true, error: null }
+    } catch (error: any) {
+      return { data: null, error: { code: 'unknown_error', message: error.message } }
+    }
+  },
+
+  /**
+   * Get players in a team (helper method)
+   */
+  async getTeamPlayers(teamId: string): Promise<ApiResponse<User[]>> {
+    try {
+      const { data: team, error } = await this.getTeamWithRoster(teamId)
+      
+      if (error || !team) {
+        return { data: null, error: error || { code: 'not_found', message: 'Team not found' } }
+      }
+
+      // Extract player objects from team players
+      const players = team.players
+        ?.map(tp => tp.player)
+        .filter((p): p is User => p !== undefined) || []
+
+      return { data: players, error: null }
     } catch (error: any) {
       return { data: null, error: { code: 'unknown_error', message: error.message } }
     }

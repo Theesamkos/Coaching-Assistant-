@@ -51,7 +51,7 @@ export const noteService = {
    */
   async getPlayerNotes(
     playerId: string,
-    coachId: string,
+    coachId?: string,
     filters?: NoteFilters
   ): Promise<ApiResponse<CoachNote[]>> {
     try {
@@ -63,7 +63,11 @@ export const noteService = {
           player:profiles!coach_notes_player_id_fkey(id, display_name, email)
         `)
         .eq('player_id', playerId)
-        .eq('coach_id', coachId)
+      
+      // Only filter by coach if coachId is provided
+      if (coachId) {
+        query = query.eq('coach_id', coachId)
+      }
 
       // Apply filters
       if (filters?.noteType) {
