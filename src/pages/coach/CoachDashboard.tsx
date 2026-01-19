@@ -8,22 +8,22 @@ import { playerManagementService } from '@/services/player-management.service'
 import { statisticsService } from '@/services/statistics.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import {
-  Users,
-  Calendar,
-  BookOpen,
-  TrendingUp,
-  UserPlus,
-  Plus,
-  ArrowRight,
-  Clock,
-  AlertCircle,
-  CheckCircle,
-  Bell,
-  Zap,
-  BarChart3,
-  Target,
-  MessageSquare,
-} from 'lucide-react'
+  UsersIcon,
+  CalendarIcon,
+  BookOpenIcon,
+  ArrowTrendingUpIcon,
+  UserPlusIcon,
+  PlusIcon,
+  ArrowRightIcon,
+  ClockIcon,
+  ExclamationCircleIcon,
+  CheckCircleIcon,
+  BellIcon,
+  SparklesIcon,
+  ChartBarIcon,
+  TargetIcon,
+  ChatBubbleLeftIcon,
+} from '@heroicons/react/24/solid'
 import { CoachPlayer, Practice, Drill, EnhancedPlayer, PlayerStatistic } from '@/types'
 import { format, isToday, isTomorrow, isPast, differenceInDays } from 'date-fns'
 
@@ -50,7 +50,7 @@ export default function CoachDashboard() {
   const { userProfile } = useAuth()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
-  
+
   // Stats
   const [stats, setStats] = useState({
     totalPlayers: 0,
@@ -60,14 +60,16 @@ export default function CoachDashboard() {
     avgAttendance: 0,
     completedPractices: 0,
   })
-  
+
   // Data
   const [recentPlayers, setRecentPlayers] = useState<CoachPlayer[]>([])
   const [upcomingPractices, setUpcomingPractices] = useState<Practice[]>([])
   const [todaysPractices, setTodaysPractices] = useState<Practice[]>([])
   const [recentActivity, setRecentActivity] = useState<ActivityItem[]>([])
   const [actionItems, setActionItems] = useState<ActionItem[]>([])
-  const [playersWithStats, setPlayersWithStats] = useState<Array<EnhancedPlayer & { stats?: any }>>([])
+  const [playersWithStats, setPlayersWithStats] = useState<Array<EnhancedPlayer & { stats?: any }>>(
+    []
+  )
 
   useEffect(() => {
     if (userProfile?.id) {
@@ -82,47 +84,55 @@ export default function CoachDashboard() {
     try {
       // Load players
       const { data: players } = await playerService.getCoachPlayers(userProfile.id)
-      const activePlayers = players?.filter((p) => p.status === 'accepted') || []
-      
+      const activePlayers = players?.filter(p => p.status === 'accepted') || []
+
       // Load enhanced players with stats
       let playersWithStatsData: Array<EnhancedPlayer & { stats?: any }> = []
-      const { data: enhancedPlayers } = await playerManagementService.getCoachPlayersEnhanced(userProfile.id)
+      const { data: enhancedPlayers } = await playerManagementService.getCoachPlayersEnhanced(
+        userProfile.id
+      )
       if (enhancedPlayers) {
         playersWithStatsData = await Promise.all(
-          enhancedPlayers.map(async (player) => {
+          enhancedPlayers.map(async player => {
             const { data: statsArray } = await statisticsService.getPlayerStatistics(player.id)
             // Calculate simple stats from the array of statistics
             const stats = {
               totalStats: statsArray?.length || 0,
               attendanceRate: 85, // Mock for now - would calculate from practice_players table
-              practicesAttended: statsArray?.filter(s => s.attendanceStatus === 'present').length || 0
+              practicesAttended:
+                statsArray?.filter(s => s.attendanceStatus === 'present').length || 0,
             }
             return { ...player, stats }
           })
         )
         setPlayersWithStats(playersWithStatsData)
-        
+
         // Calculate average attendance
-        const totalAttendance = playersWithStatsData.reduce((sum, p) => sum + (p.stats?.attendanceRate || 0), 0)
-        const avgAttendance = playersWithStatsData.length > 0 ? totalAttendance / playersWithStatsData.length : 0
-        
+        const totalAttendance = playersWithStatsData.reduce(
+          (sum, p) => sum + (p.stats?.attendanceRate || 0),
+          0
+        )
+        const avgAttendance =
+          playersWithStatsData.length > 0 ? totalAttendance / playersWithStatsData.length : 0
+
         setStats(prev => ({ ...prev, avgAttendance }))
       }
-      
+
       // Load all practices
       const { data: allPractices } = await practiceService.getPractices(userProfile.id, {})
-      
+
       // Filter today's practices
       const today = allPractices?.filter(p => isToday(new Date(p.scheduledDate))) || []
       setTodaysPractices(today)
-      
+
       // Filter upcoming practices
       const now = new Date()
-      const upcoming = allPractices?.filter(p => 
-        p.status === 'scheduled' && new Date(p.scheduledDate) > now
-      ).slice(0, 4) || []
+      const upcoming =
+        allPractices
+          ?.filter(p => p.status === 'scheduled' && new Date(p.scheduledDate) > now)
+          .slice(0, 4) || []
       setUpcomingPractices(upcoming)
-      
+
       // Count completed practices
       const completed = allPractices?.filter(p => p.status === 'completed').length || 0
 
@@ -141,10 +151,10 @@ export default function CoachDashboard() {
 
       // Set recent data
       setRecentPlayers(players?.slice(0, 5) || [])
-      
+
       // Generate recent activity
       generateRecentActivity(players || [], allPractices || [], drills || [])
-      
+
       // Generate action items
       generateActionItems(players || [], upcoming, playersWithStatsData)
     } catch (error) {
@@ -156,7 +166,7 @@ export default function CoachDashboard() {
 
   function generateRecentActivity(players: CoachPlayer[], practices: Practice[], drills: Drill[]) {
     const activities: ActivityItem[] = []
-    
+
     // Recent player joins
     players.slice(0, 3).forEach(player => {
       if (player.acceptedAt) {
@@ -166,12 +176,12 @@ export default function CoachDashboard() {
           title: `${player.player?.displayName} joined your team`,
           description: format(new Date(player.acceptedAt), 'MMM d, yyyy'),
           timestamp: new Date(player.acceptedAt),
-          icon: UserPlus,
+          icon: UserPlusIcon,
           color: 'text-blue-500',
         })
       }
     })
-    
+
     // Recent completed practices
     practices
       .filter(p => p.status === 'completed')
@@ -183,11 +193,11 @@ export default function CoachDashboard() {
           title: `Completed: ${practice.title}`,
           description: format(new Date(practice.scheduledDate), 'MMM d, yyyy'),
           timestamp: new Date(practice.scheduledDate),
-          icon: CheckCircle,
+          icon: CheckCircleIcon,
           color: 'text-emerald-500',
         })
       })
-    
+
     // Recent drills created
     drills.slice(0, 2).forEach(drill => {
       activities.push({
@@ -196,23 +206,23 @@ export default function CoachDashboard() {
         title: `New drill: ${drill.title}`,
         description: drill.category || 'General',
         timestamp: new Date(drill.createdAt),
-        icon: BookOpen,
+        icon: BookOpenIcon,
         color: 'text-purple-500',
       })
     })
-    
+
     // Sort by timestamp and take top 5
     activities.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
     setRecentActivity(activities.slice(0, 5))
   }
 
   function generateActionItems(
-    players: CoachPlayer[], 
+    players: CoachPlayer[],
     upcoming: Practice[],
     playersWithStats: Array<EnhancedPlayer & { stats?: any }>
   ) {
     const items: ActionItem[] = []
-    
+
     // Check for today's practices
     const todayPractice = upcoming.find(p => isToday(new Date(p.scheduledDate)))
     if (todayPractice) {
@@ -225,7 +235,7 @@ export default function CoachDashboard() {
         actionLabel: 'View Details',
       })
     }
-    
+
     // Check for tomorrow's practices
     const tomorrowPractice = upcoming.find(p => isTomorrow(new Date(p.scheduledDate)))
     if (tomorrowPractice) {
@@ -238,7 +248,7 @@ export default function CoachDashboard() {
         actionLabel: 'Prepare',
       })
     }
-    
+
     // Check for pending player invitations
     const pendingPlayers = players.filter(p => p.status === 'pending')
     if (pendingPlayers.length > 0) {
@@ -246,12 +256,12 @@ export default function CoachDashboard() {
         id: 'pending-invites',
         type: 'info',
         title: `⏳ ${pendingPlayers.length} Pending Invitation${pendingPlayers.length > 1 ? 's' : ''}`,
-        description: 'Players who haven\'t accepted yet',
+        description: "Players who haven't accepted yet",
         action: () => navigate('/coach/players'),
         actionLabel: 'View Players',
       })
     }
-    
+
     // Check for players with low attendance
     const lowAttendance = playersWithStats.filter(p => p.stats && p.stats.attendanceRate < 70)
     if (lowAttendance.length > 0) {
@@ -264,7 +274,7 @@ export default function CoachDashboard() {
         actionLabel: 'View Analytics',
       })
     }
-    
+
     // Check if no upcoming practices
     if (upcoming.length === 0) {
       items.push({
@@ -276,7 +286,7 @@ export default function CoachDashboard() {
         actionLabel: 'Schedule Now',
       })
     }
-    
+
     setActionItems(items.slice(0, 4))
   }
 
@@ -306,24 +316,24 @@ export default function CoachDashboard() {
       {/* Action Items Banner */}
       {actionItems.length > 0 && (
         <div className="mb-6 space-y-3">
-          {actionItems.map((item) => (
+          {actionItems.map(item => (
             <div
               key={item.id}
               className={`rounded-xl p-4 flex items-center justify-between ${
                 item.type === 'urgent'
                   ? 'bg-red-50 border-2 border-red-200'
                   : item.type === 'important'
-                  ? 'bg-orange-50 border-2 border-orange-200'
-                  : 'bg-blue-50 border-2 border-blue-200'
+                    ? 'bg-orange-50 border-2 border-orange-200'
+                    : 'bg-blue-50 border-2 border-blue-200'
               }`}
             >
               <div className="flex items-center gap-3">
                 {item.type === 'urgent' ? (
-                  <AlertCircle className="h-6 w-6 text-red-600" />
+                  <ExclamationCircleIcon className="h-6 w-6 text-red-600" />
                 ) : item.type === 'important' ? (
-                  <Bell className="h-6 w-6 text-orange-600" />
+                  <BellIcon className="h-6 w-6 text-orange-600" />
                 ) : (
-                  <Zap className="h-6 w-6 text-blue-600" />
+                  <SparklesIcon className="h-6 w-6 text-blue-600" />
                 )}
                 <div>
                   <h3 className="font-semibold text-slate-900">{item.title}</h3>
@@ -336,8 +346,8 @@ export default function CoachDashboard() {
                   item.type === 'urgent'
                     ? 'bg-red-600 hover:bg-red-700 text-white'
                     : item.type === 'important'
-                    ? 'bg-orange-600 hover:bg-orange-700 text-white'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      ? 'bg-orange-600 hover:bg-orange-700 text-white'
+                      : 'bg-blue-600 hover:bg-blue-700 text-white'
                 }`}
               >
                 {item.actionLabel}
@@ -350,7 +360,7 @@ export default function CoachDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <StatCard
-          icon={Users}
+          icon={UsersIcon}
           label="Active Players"
           value={stats.activePlayers}
           total={stats.totalPlayers}
@@ -359,7 +369,7 @@ export default function CoachDashboard() {
           subtitle={`${stats.totalPlayers} total`}
         />
         <StatCard
-          icon={Calendar}
+          icon={CalendarIcon}
           label="Upcoming Practices"
           value={stats.upcomingPractices}
           color="emerald"
@@ -367,7 +377,7 @@ export default function CoachDashboard() {
           subtitle={`${stats.completedPractices} completed`}
         />
         <StatCard
-          icon={TrendingUp}
+          icon={ArrowTrendingUpIcon}
           label="Avg Attendance"
           value={`${stats.avgAttendance.toFixed(0)}%`}
           color="purple"
@@ -375,7 +385,7 @@ export default function CoachDashboard() {
           subtitle={stats.avgAttendance >= 80 ? 'Excellent!' : 'Needs work'}
         />
         <StatCard
-          icon={BookOpen}
+          icon={BookOpenIcon}
           label="Drill Library"
           value={stats.totalDrills}
           color="amber"
@@ -392,10 +402,10 @@ export default function CoachDashboard() {
           {todaysPractices.length > 0 && (
             <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-6 text-white shadow-lg">
               <div className="flex items-center gap-3 mb-4">
-                <Clock className="h-6 w-6" />
+                <ClockIcon className="h-6 w-6" />
                 <h2 className="text-xl font-bold">Today's Practice</h2>
               </div>
-              {todaysPractices.map((practice) => (
+              {todaysPractices.map(practice => (
                 <div
                   key={practice.id}
                   onClick={() => navigate(`/coach/practices/${practice.id}`)}
@@ -425,13 +435,13 @@ export default function CoachDashboard() {
                 className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
               >
                 View all
-                <ArrowRight size={16} />
+                <ArrowRightIcon size={16} />
               </button>
             </div>
             <div className="p-6">
               {upcomingPractices.length === 0 ? (
                 <div className="text-center py-12">
-                  <Calendar className="mx-auto h-12 w-12 text-slate-400 mb-4" />
+                  <CalendarIcon className="mx-auto h-12 w-12 text-slate-400 mb-4" />
                   <h3 className="text-sm font-medium text-slate-900 mb-2">No upcoming practices</h3>
                   <p className="text-sm text-slate-600 mb-4">Schedule your next practice session</p>
                   <button
@@ -444,10 +454,10 @@ export default function CoachDashboard() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {upcomingPractices.map((practice) => {
+                  {upcomingPractices.map(practice => {
                     const practiceDate = new Date(practice.scheduledDate)
                     const daysUntil = differenceInDays(practiceDate, new Date())
-                    
+
                     return (
                       <div
                         key={practice.id}
@@ -456,19 +466,29 @@ export default function CoachDashboard() {
                       >
                         <div className="flex items-start justify-between mb-2">
                           <h4 className="font-semibold text-slate-900">{practice.title}</h4>
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            daysUntil === 0 ? 'bg-red-100 text-red-700' :
-                            daysUntil === 1 ? 'bg-orange-100 text-orange-700' :
-                            'bg-blue-100 text-blue-700'
-                          }`}>
-                            {daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : `In ${daysUntil} days`}
+                          <span
+                            className={`px-2 py-1 rounded text-xs font-medium ${
+                              daysUntil === 0
+                                ? 'bg-red-100 text-red-700'
+                                : daysUntil === 1
+                                  ? 'bg-orange-100 text-orange-700'
+                                  : 'bg-blue-100 text-blue-700'
+                            }`}
+                          >
+                            {daysUntil === 0
+                              ? 'Today'
+                              : daysUntil === 1
+                                ? 'Tomorrow'
+                                : `In ${daysUntil} days`}
                           </span>
                         </div>
                         <p className="text-sm text-slate-600 mb-2">{practice.description}</p>
                         <div className="flex items-center gap-4 text-xs text-slate-500">
                           <span>📅 {format(practiceDate, 'EEE, MMM d')}</span>
                           <span>🕐 {format(practiceDate, 'h:mm a')}</span>
-                          {practice.durationMinutes && <span>⏱️ {practice.durationMinutes} min</span>}
+                          {practice.durationMinutes && (
+                            <span>⏱️ {practice.durationMinutes} min</span>
+                          )}
                         </div>
                       </div>
                     )
@@ -491,7 +511,7 @@ export default function CoachDashboard() {
                 <p className="text-center text-slate-500 py-8">No recent activity</p>
               ) : (
                 <div className="space-y-4">
-                  {recentActivity.map((activity) => {
+                  {recentActivity.map(activity => {
                     const Icon = activity.icon
                     return (
                       <div key={activity.id} className="flex items-start gap-3">
@@ -516,7 +536,7 @@ export default function CoachDashboard() {
           {/* Quick Actions */}
           <div className="space-y-3">
             <h2 className="text-lg font-semibold text-slate-900 px-2">Quick Actions</h2>
-            
+
             <button
               onClick={() => navigate('/coach/players/invite')}
               className="w-full bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-blue-500/20 hover:shadow-xl"
@@ -557,7 +577,7 @@ export default function CoachDashboard() {
               onClick={() => navigate('/coach/announcements')}
               className="w-full bg-gradient-to-br from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-indigo-500/20 hover:shadow-xl"
             >
-              <MessageSquare className="mb-2" size={24} />
+              <ChatBubbleLeftIcon className="mb-2" size={24} />
               <h3 className="text-lg font-semibold mb-1">Announcements</h3>
               <p className="text-indigo-100 text-sm">Post updates to your team</p>
             </button>
