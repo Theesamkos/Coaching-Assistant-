@@ -241,7 +241,7 @@ export type SkillLevel = 'beginner' | 'intermediate' | 'advanced' | 'elite'
 // Enhanced Player Profile
 export interface EnhancedPlayer extends User {
   role: 'player'
-  
+
   // Basic hockey info
   position?: string
   jerseyNumber?: number | null
@@ -250,21 +250,21 @@ export interface EnhancedPlayer extends User {
   weightLbs?: number | null
   yearsExperience?: number | null
   skillLevel?: SkillLevel | null
-  
+
   // Contact information
   phone?: string | null
   dateOfBirth?: Date | null
-  
+
   // Emergency contact
   emergencyContactName?: string | null
   emergencyContactPhone?: string | null
   emergencyContactRelationship?: string | null
-  
+
   // Parent/Guardian (for minors)
   parentName?: string | null
   parentEmail?: string | null
   parentPhone?: string | null
-  
+
   // Address
   addressLine1?: string | null
   addressLine2?: string | null
@@ -272,17 +272,17 @@ export interface EnhancedPlayer extends User {
   state?: string | null
   zipCode?: string | null
   country?: string | null
-  
+
   // Social media
   instagramHandle?: string | null
   twitterHandle?: string | null
-  
+
   // Privacy settings
   privacySettings: PrivacySettings
-  
+
   // Medical notes (coaches only)
   medicalNotes?: string | null
-  
+
   // Computed
   age?: number
   teams?: TeamInfo[]
@@ -411,15 +411,15 @@ export interface PlayerStatistic {
   coachId: string
   statDate: Date
   statType: StatType
-  
+
   // Practice stats
   attendanceStatus?: PracticeAttendance | null
   drillsCompleted?: number | null
   practiceRating?: number | null // 1-5
-  
+
   // Performance metrics
   skillRatings?: SkillRatings
-  
+
   // Game stats
   goals?: number
   assists?: number
@@ -427,16 +427,16 @@ export interface PlayerStatistic {
   plusMinus?: number
   shots?: number
   saves?: number // For goalies
-  
+
   // Custom stats
   customStats?: CustomStats
-  
+
   // Notes
   notes?: string | null
-  
+
   createdAt: Date
   updatedAt: Date
-  
+
   // Populated relationships
   player?: EnhancedPlayer
   coach?: User
@@ -638,45 +638,45 @@ export type PlanPermission = 'view' | 'copy' | 'edit'
 export interface PracticePlan {
   id: string
   coachId: string
-  
+
   // Basic Info
   title: string
   description: string | null
-  
+
   // Metadata
   categoryId: string | null
   tags: string[]
-  
+
   // Target Audience
   ageGroup: AgeGroup | null
   skillLevel: SkillLevelPlan | null
   teamSizeMin: number | null
   teamSizeMax: number | null
-  
+
   // Duration & Structure
   totalDurationMinutes: number | null
-  
+
   // Objectives & Notes
   objectives: string[]
   equipmentNeeded: string[]
   coachingNotes: string | null
   safetyNotes: string | null
-  
+
   // Organization
   folderPath: string | null
-  
+
   // Sharing
   isPublic: boolean
   isTemplate: boolean
-  
+
   // Usage Stats
   timesUsed: number
   lastUsedAt: Date | null
-  
+
   // Timestamps
   createdAt: Date
   updatedAt: Date
-  
+
   // Populated relationships
   category?: PracticePlanCategory
   coach?: User
@@ -734,27 +734,27 @@ export interface PracticePlanDrill {
   id: string
   sectionId: string
   drillId: string | null // reference to existing drill or null if custom
-  
+
   // Custom drill info (if not referencing existing drill)
   customTitle: string | null
   customDescription: string | null
   customInstructions: string | null
-  
+
   durationMinutes: number | null
   orderIndex: number
-  
+
   // Drill-specific notes
   coachingPoints: string | null
   variations: string | null
-  
+
   // Player organization
   playerCountMin: number | null
   playerCountMax: number | null
   groupsCount: number | null
-  
+
   createdAt: Date
   updatedAt: Date
-  
+
   // Populated relationships
   drill?: Drill
 }
@@ -818,4 +818,57 @@ export interface PracticePlanFilters {
   searchTerm?: string
 }
 
+// ============================================================================
+// FILES FEATURE TYPES
+// ============================================================================
 
+export type FileEntityType = 'drill' | 'session' | 'player' | 'coach' | 'general'
+export type FilePermissionLevel = 'view' | 'comment' | 'edit' | 'admin'
+
+export interface FileRecord {
+  id: string
+  uploadedBy: string
+  fileName: string
+  fileType: string // MIME type
+  fileSizeBytes: number
+  storageUrl: string
+  description?: string
+  entityType: FileEntityType
+  entityId?: string
+  isPublic: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface FileShare {
+  id: string
+  fileId: string
+  sharedWithUserId: string
+  permissionLevel: FilePermissionLevel
+  sharedByUserId: string
+  createdAt: Date
+}
+
+export interface FileComment {
+  id: string
+  fileId: string
+  userId: string
+  comment: string
+  timestampPosition?: number // For video files
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface FileWithMetadata extends FileRecord {
+  uploadedByUser?: Partial<User>
+  shares?: FileShare[]
+  comments?: FileComment[]
+  commentCount: number
+}
+
+export interface FileUploadOptions {
+  entityType: FileEntityType
+  entityId?: string
+  description?: string
+  isPublic?: boolean
+}
