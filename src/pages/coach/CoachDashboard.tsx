@@ -427,7 +427,7 @@ export default function CoachDashboard() {
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
               <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
+                <CalendarIcon className="h-5 w-5" />
                 Upcoming Practices
               </h2>
               <button
@@ -550,7 +550,7 @@ export default function CoachDashboard() {
               onClick={() => navigate('/coach/calendar')}
               className="w-full bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-emerald-500/20 hover:shadow-xl"
             >
-              <Calendar className="mb-2" size={24} />
+              <CalendarIcon className="mb-2 h-6 w-6" />
               <h3 className="text-lg font-semibold mb-1">Calendar View</h3>
               <p className="text-emerald-100 text-sm">Visual practice scheduling</p>
             </button>
