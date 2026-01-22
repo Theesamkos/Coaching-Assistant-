@@ -448,7 +448,7 @@ export default function CoachDashboard() {
                     onClick={() => navigate('/coach/practices/create')}
                     className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
                   >
-                    <Plus size={18} />
+                    <PlusIcon className="h-[18px] w-[18px]" />
                     Schedule Practice
                   </button>
                 </div>
@@ -541,7 +541,7 @@ export default function CoachDashboard() {
               onClick={() => navigate('/coach/players/invite')}
               className="w-full bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-blue-500/20 hover:shadow-xl"
             >
-              <UserPlus className="mb-2" size={24} />
+              <UserPlusIcon className="mb-2 h-6 w-6" />
               <h3 className="text-lg font-semibold mb-1">Invite Players</h3>
               <p className="text-blue-100 text-sm">Add new players to your roster</p>
             </button>
