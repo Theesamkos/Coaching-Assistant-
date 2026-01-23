@@ -10,17 +10,17 @@ import Button from '@/components/ui/Button'
 import AnnouncementModal from '@/components/communication/AnnouncementModal'
 import { Announcement, AnnouncementFormData, Team, EnhancedPlayer, Practice } from '@/types'
 import {
-  Megaphone,
-  Plus,
-  Pin,
-  Edit,
-  Trash2,
-  Users,
-  User,
-  Target,
-  Clock,
-  AlertCircle,
-} from 'lucide-react'
+  MegaphoneIcon,
+  PlusIcon,
+  MapPinIcon,
+  PencilIcon,
+  TrashIcon,
+  UsersIcon,
+  UserIcon,
+  TargetIcon,
+  ClockIcon,
+  ExclamationCircleIcon,
+} from '@heroicons/react/24/solid'
 import { format } from 'date-fns'
 
 export default function AnnouncementsPage() {
@@ -155,13 +155,13 @@ export default function AnnouncementsPage() {
   const getAudienceIcon = (audience: string) => {
     switch (audience) {
       case 'all':
-        return <Users className="h-4 w-4" />
+        return <UsersIcon className="h-4 w-4" />
       case 'team':
-        return <Target className="h-4 w-4" />
+        return <TargetIcon className="h-4 w-4" />
       case 'individual':
-        return <User className="h-4 w-4" />
+        return <UserIcon className="h-4 w-4" />
       default:
-        return <Users className="h-4 w-4" />
+        return <UsersIcon className="h-4 w-4" />
     }
   }
 
@@ -177,7 +177,7 @@ export default function AnnouncementsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-              <Megaphone className="h-8 w-8" />
+              <MegaphoneIcon className="h-8 w-8" />
               Announcements
             </h1>
             <p className="text-slate-400">Communicate with your players and teams</p>
@@ -186,7 +186,7 @@ export default function AnnouncementsPage() {
             onClick={() => setIsModalOpen(true)}
             className="flex items-center gap-2"
           >
-            <Plus className="h-5 w-5" />
+            <PlusIcon className="h-5 w-5" />
             New Announcement
           </Button>
         </div>
@@ -229,13 +229,13 @@ export default function AnnouncementsPage() {
         </div>
       ) : announcements.length === 0 ? (
         <div className="bg-slate-800 rounded-xl p-12 text-center border border-slate-700">
-          <Megaphone className="h-16 w-16 mx-auto mb-4 text-slate-600" />
+          <MegaphoneIcon className="h-16 w-16 mx-auto mb-4 text-slate-600" />
           <h2 className="text-xl font-semibold text-white mb-2">No Announcements Yet</h2>
           <p className="text-slate-400 mb-6">
             Create your first announcement to communicate with your team
           </p>
           <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 mx-auto">
-            <Plus className="h-5 w-5" />
+            <PlusIcon className="h-5 w-5" />
             Create Announcement
           </Button>
         </div>
@@ -262,7 +262,7 @@ export default function AnnouncementsPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         {announcement.isPinned && (
-                          <Pin className="h-5 w-5 text-blue-400" />
+                          <MapPinIcon className="h-5 w-5 text-blue-400" />
                         )}
                         <h3 className="text-xl font-semibold text-white">
                           {announcement.title}
@@ -299,7 +299,7 @@ export default function AnnouncementsPage() {
                               isExpired ? 'text-red-400' : 'text-slate-400'
                             }`}
                           >
-                            <Clock className="h-3 w-3" />
+                            <ClockIcon className="h-3 w-3" />
                             {isExpired ? 'Expired' : `Expires ${format(new Date(announcement.expiresAt), 'MMM d')}`}
                           </span>
                         )}
@@ -317,21 +317,21 @@ export default function AnnouncementsPage() {
                         }`}
                         title={announcement.isPinned ? 'Unpin' : 'Pin'}
                       >
-                        <Pin className="h-4 w-4" />
+                        <MapPinIcon className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => openEditModal(announcement)}
                         className="p-2 bg-slate-700 text-slate-400 rounded-lg hover:bg-slate-600 transition-colors"
                         title="Edit"
                       >
-                        <Edit className="h-4 w-4" />
+                        <PencilIcon className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteAnnouncement(announcement.id)}
                         className="p-2 bg-slate-700 text-red-400 rounded-lg hover:bg-red-600 hover:text-white transition-colors"
                         title="Delete"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <TrashIcon className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
@@ -342,7 +342,7 @@ export default function AnnouncementsPage() {
                   {/* Footer Info */}
                   {announcement.relatedPracticeId && (
                     <div className="flex items-center gap-2 text-sm text-slate-400">
-                      <AlertCircle className="h-4 w-4" />
+                      <ExclamationCircleIcon className="h-4 w-4" />
                       <span>Related to a practice</span>
                     </div>
                   )}

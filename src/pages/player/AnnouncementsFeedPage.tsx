@@ -5,16 +5,16 @@ import { announcementService } from '@/services/announcement.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import { Announcement } from '@/types'
 import {
-  Megaphone,
-  Pin,
-  Users,
-  User,
-  Target,
-  Clock,
-  AlertCircle,
-  CheckCircle,
-  Bell,
-} from 'lucide-react'
+  MegaphoneIcon,
+  MapPinIcon,
+  UsersIcon,
+  UserIcon,
+  TargetIcon,
+  ClockIcon,
+  ExclamationCircleIcon,
+  CheckCircleIcon,
+  BellIcon,
+} from '@heroicons/react/24/solid'
 import { format } from 'date-fns'
 
 export default function AnnouncementsFeedPage() {
@@ -81,13 +81,13 @@ export default function AnnouncementsFeedPage() {
   const getAudienceIcon = (audience: string) => {
     switch (audience) {
       case 'all':
-        return <Users className="h-4 w-4" />
+        return <UsersIcon className="h-4 w-4" />
       case 'team':
-        return <Target className="h-4 w-4" />
+        return <TargetIcon className="h-4 w-4" />
       case 'individual':
-        return <User className="h-4 w-4" />
+        return <UserIcon className="h-4 w-4" />
       default:
-        return <Users className="h-4 w-4" />
+        return <UsersIcon className="h-4 w-4" />
     }
   }
 
@@ -105,7 +105,7 @@ export default function AnnouncementsFeedPage() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-          <Megaphone className="h-8 w-8" />
+          <MegaphoneIcon className="h-8 w-8" />
           Announcements
         </h1>
         <p className="text-slate-400">Updates and messages from your coaches</p>
@@ -114,7 +114,7 @@ export default function AnnouncementsFeedPage() {
       {/* Unread Banner */}
       {unreadCount > 0 && (
         <div className="bg-blue-500/10 border-2 border-blue-500/30 rounded-xl p-4 mb-6 flex items-center gap-3">
-          <Bell className="h-6 w-6 text-blue-400" />
+          <BellIcon className="h-6 w-6 text-blue-400" />
           <div>
             <p className="font-semibold text-white">
               You have {unreadCount} unread announcement{unreadCount !== 1 ? 's' : ''}
@@ -131,7 +131,7 @@ export default function AnnouncementsFeedPage() {
         </div>
       ) : announcements.length === 0 ? (
         <div className="bg-slate-800 rounded-xl p-12 text-center border border-slate-700">
-          <Megaphone className="h-16 w-16 mx-auto mb-4 text-slate-600" />
+          <MegaphoneIcon className="h-16 w-16 mx-auto mb-4 text-slate-600" />
           <h2 className="text-xl font-semibold text-white mb-2">No Announcements</h2>
           <p className="text-slate-400">
             Your coaches haven't posted any announcements yet
@@ -143,7 +143,7 @@ export default function AnnouncementsFeedPage() {
           {pinnedAnnouncements.length > 0 && (
             <div>
               <h2 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                <Pin className="h-5 w-5 text-blue-400" />
+                <MapPinIcon className="h-5 w-5 text-blue-400" />
                 Pinned
               </h2>
               <div className="space-y-4">
@@ -225,7 +225,7 @@ function AnnouncementCard({
                 <span className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse" />
               )}
               {announcement.isPinned && (
-                <Pin className="h-5 w-5 text-blue-400" />
+                <MapPinIcon className="h-5 w-5 text-blue-400" />
               )}
               <h3 className="text-xl font-semibold text-white">
                 {announcement.title}
@@ -261,7 +261,7 @@ function AnnouncementCard({
                     isExpired ? 'text-red-400' : 'text-slate-400'
                   }`}
                 >
-                  <Clock className="h-3 w-3" />
+                  <ClockIcon className="h-3 w-3" />
                   {isExpired ? 'Expired' : `Expires ${format(new Date(announcement.expiresAt), 'MMM d')}`}
                 </span>
               )}
@@ -275,7 +275,7 @@ function AnnouncementCard({
               disabled={isMarkingRead}
               className="flex items-center gap-2 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors text-sm disabled:opacity-50"
             >
-              <CheckCircle className="h-4 w-4" />
+              <CheckCircleIcon className="h-4 w-4" />
               Mark as Read
             </button>
           )}
@@ -288,19 +288,19 @@ function AnnouncementCard({
         <div className="flex items-center gap-4 text-sm">
           {announcement.targetAudience === 'individual' && (
             <div className="flex items-center gap-2 text-purple-400">
-              <User className="h-4 w-4" />
+              <UserIcon className="h-4 w-4" />
               <span>Personal message</span>
             </div>
           )}
           {announcement.relatedPracticeId && (
             <div className="flex items-center gap-2 text-blue-400">
-              <AlertCircle className="h-4 w-4" />
+              <ExclamationCircleIcon className="h-4 w-4" />
               <span>Related to a practice</span>
             </div>
           )}
           {announcement.isRead && (
             <div className="flex items-center gap-2 text-slate-500">
-              <CheckCircle className="h-4 w-4" />
+              <CheckCircleIcon className="h-4 w-4" />
               <span>Read</span>
             </div>
           )}

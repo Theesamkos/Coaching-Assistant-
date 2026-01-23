@@ -5,7 +5,7 @@ import TextArea from '@/components/ui/TextArea'
 import Button from '@/components/ui/Button'
 import Select from '@/components/ui/Select'
 import { Announcement, AnnouncementFormData, AnnouncementPriority, AnnouncementAudience, Team, EnhancedPlayer, Practice } from '@/types'
-import { AlertCircle, Pin, Clock } from 'lucide-react'
+import { ExclamationCircleIcon, MapPinIcon, ClockIcon } from '@heroicons/react/24/solid'
 
 interface AnnouncementModalProps {
   isOpen: boolean
@@ -172,7 +172,7 @@ export default function AnnouncementModal({
                 onChange={(e) => setIsPinned(e.target.checked)}
                 className="form-checkbox h-5 w-5 text-blue-600"
               />
-              <Pin className="h-5 w-5 text-slate-400" />
+              <MapPinIcon className="h-5 w-5 text-slate-400" />
               <span className="text-slate-300 text-sm font-medium">Pin to Top</span>
             </label>
           </div>
@@ -247,7 +247,7 @@ export default function AnnouncementModal({
         {/* Expiration */}
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
-            <Clock className="h-4 w-4" />
+            <ClockIcon className="h-4 w-4" />
             Expires At (Optional)
           </label>
           <Input
@@ -263,7 +263,7 @@ export default function AnnouncementModal({
         {/* Error */}
         {error && (
           <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 flex items-start gap-2">
-            <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+            <ExclamationCircleIcon className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
             <p className="text-red-400 text-sm">{error}</p>
           </div>
         )}

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Menu } from 'lucide-react'
+import { Bars3Icon } from '@heroicons/react/24/solid'
 import Sidebar from './Sidebar'
 import { User as SupabaseUser } from '@supabase/supabase-js'
 import { User, UserRole } from '@/types'
@@ -33,7 +33,7 @@ export default function DashboardLayout({
             onClick={() => setSidebarOpen(true)}
             className="text-slate-300 hover:text-white"
           >
-            <Menu size={24} />
+            <Bars3Icon size={24} />
           </button>
           <h1 className="text-lg font-semibold text-white">Coaching Assistant</h1>
         </div>

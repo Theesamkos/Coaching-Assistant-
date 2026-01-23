@@ -5,20 +5,20 @@ import { practicePlanService } from '@/services/practice-plan.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Button from '@/components/ui/Button'
 import {
-  Plus,
-  Search,
-  Filter,
-  FolderOpen,
-  Star,
-  Users,
-  Clock,
-  Copy,
-  Share2,
-  Trash2,
-  Eye,
-  Edit,
-  MoreVertical,
-} from 'lucide-react'
+  PlusIcon,
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  FolderOpenIcon,
+  StarIcon,
+  UsersIcon,
+  ClockIcon,
+  DocumentDuplicateIcon,
+  ShareIcon,
+  TrashIcon,
+  EyeIcon,
+  PencilIcon,
+  EllipsisVerticalIcon,
+} from '@heroicons/react/24/solid'
 import { PracticePlan, PracticePlanCategory, PracticePlanFilters } from '@/types'
 import { format } from 'date-fns'
 
@@ -115,7 +115,7 @@ export default function PracticePlansPage() {
             onClick={() => navigate('/coach/plans/create')}
             className="flex items-center gap-2"
           >
-            <Plus size={20} />
+            <PlusIcon size={20} />
             Create New Plan
           </Button>
         </div>
@@ -123,7 +123,7 @@ export default function PracticePlansPage() {
         {/* Search & Filters */}
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
             <input
               type="text"
               value={searchTerm}
@@ -168,7 +168,7 @@ export default function PracticePlansPage() {
                   : 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'
               }`}
             >
-              <Star size={20} fill={filters.isFavorite ? 'currentColor' : 'none'} />
+              <StarIcon size={20} fill={filters.isFavorite ? 'currentColor' : 'none'} />
             </button>
           </div>
         </div>
@@ -203,13 +203,13 @@ export default function PracticePlansPage() {
       {/* Plans Grid/List */}
       {plans.length === 0 ? (
         <div className="text-center py-20 bg-slate-800 rounded-xl border border-slate-700">
-          <FolderOpen className="mx-auto h-16 w-16 text-slate-600 mb-4" />
+          <FolderOpenIcon className="mx-auto h-16 w-16 text-slate-600 mb-4" />
           <h3 className="text-xl font-semibold text-white mb-2">No Practice Plans Yet</h3>
           <p className="text-slate-400 mb-6">
             Create your first practice plan template to get started
           </p>
           <Button onClick={() => navigate('/coach/plans/create')}>
-            <Plus size={20} className="mr-2" />
+            <PlusIcon size={20} className="mr-2" />
             Create First Plan
           </Button>
         </div>
@@ -262,35 +262,35 @@ function PlanCard({ plan, onView, onEdit, onDuplicate, onDelete, onToggleFavorit
               onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
               className="text-slate-400 hover:text-yellow-500 transition-colors"
             >
-              <Star size={18} fill={plan.isFavorite ? 'currentColor' : 'none'} />
+              <StarIcon size={18} fill={plan.isFavorite ? 'currentColor' : 'none'} />
             </button>
             <div className="relative">
               <button
                 onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
                 className="text-slate-400 hover:text-white transition-colors"
               >
-                <MoreVertical size={18} />
+                <EllipsisVerticalIcon size={18} />
               </button>
               {showMenu && (
                 <div className="absolute right-0 top-8 bg-slate-700 border border-slate-600 rounded-lg shadow-xl z-10 py-1 min-w-[150px]">
                   <button onClick={onView} className="w-full px-4 py-2 text-left text-white hover:bg-slate-600 flex items-center gap-2">
-                    <Eye size={16} /> View
+                    <EyeIcon size={16} /> View
                   </button>
                   {isOwner && (
                     <button onClick={onEdit} className="w-full px-4 py-2 text-left text-white hover:bg-slate-600 flex items-center gap-2">
-                      <Edit size={16} /> Edit
+                      <PencilIcon size={16} /> Edit
                     </button>
                   )}
                   <button onClick={onDuplicate} className="w-full px-4 py-2 text-left text-white hover:bg-slate-600 flex items-center gap-2">
-                    <Copy size={16} /> Duplicate
+                    <DocumentDuplicateIcon size={16} /> Duplicate
                   </button>
                   {isOwner && (
                     <>
                       <button onClick={() => {}} className="w-full px-4 py-2 text-left text-white hover:bg-slate-600 flex items-center gap-2">
-                        <Share2 size={16} /> Share
+                        <ShareIcon size={16} /> Share
                       </button>
                       <button onClick={onDelete} className="w-full px-4 py-2 text-left text-red-400 hover:bg-slate-600 flex items-center gap-2">
-                        <Trash2 size={16} /> Delete
+                        <TrashIcon size={16} /> Delete
                       </button>
                     </>
                   )}
@@ -336,13 +336,13 @@ function PlanCard({ plan, onView, onEdit, onDuplicate, onDelete, onToggleFavorit
         <div className="grid grid-cols-2 gap-3 text-sm">
           {plan.ageGroup && (
             <div className="flex items-center gap-2 text-slate-400">
-              <Users size={16} />
+              <UsersIcon size={16} />
               <span>{plan.ageGroup}</span>
             </div>
           )}
           {plan.totalDurationMinutes && (
             <div className="flex items-center gap-2 text-slate-400">
-              <Clock size={16} />
+              <ClockIcon size={16} />
               <span>{plan.totalDurationMinutes} min</span>
             </div>
           )}

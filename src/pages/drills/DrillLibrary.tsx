@@ -8,18 +8,18 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import {
-  Plus,
-  Search,
-  Filter,
-  Grid,
-  List,
-  Star,
-  Clock,
-  Edit,
-  Copy,
-  Trash2,
-  BookOpen,
-} from 'lucide-react'
+  PlusIcon,
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  Squares2X2Icon,
+  ListBulletIcon,
+  StarIcon,
+  ClockIcon,
+  PencilIcon,
+  DocumentDuplicateIcon,
+  TrashIcon,
+  BookOpenIcon,
+} from '@heroicons/react/24/solid'
 import { Drill } from '@/types'
 
 export default function DrillLibrary() {
@@ -190,7 +190,7 @@ export default function DrillLibrary() {
             </p>
           </div>
           <Button onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-2">
-            <Plus size={20} />
+            <PlusIcon size={20} />
             Create Drill
           </Button>
         </div>
@@ -202,7 +202,7 @@ export default function DrillLibrary() {
           {/* Search */}
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
               <input
                 type="text"
                 placeholder="Search drills..."
@@ -223,7 +223,7 @@ export default function DrillLibrary() {
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
-              <Grid size={20} />
+              <Squares2X2Icon size={20} />
             </button>
             <button
               onClick={() => setViewMode('list')}
@@ -233,7 +233,7 @@ export default function DrillLibrary() {
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
-              <List size={20} />
+              <ListBulletIcon size={20} />
             </button>
           </div>
         </div>
@@ -270,7 +270,7 @@ export default function DrillLibrary() {
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            <Star size={18} fill={favoriteFilter ? 'currentColor' : 'none'} />
+            <StarIcon size={18} fill={favoriteFilter ? 'currentColor' : 'none'} />
             Favorites
           </button>
         </div>
@@ -279,7 +279,7 @@ export default function DrillLibrary() {
       {/* Drills Grid/List */}
       {filteredDrills.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-xl border border-slate-200">
-          <BookOpen className="mx-auto h-16 w-16 text-slate-400 mb-4" />
+          <BookOpenIcon className="mx-auto h-16 w-16 text-slate-400 mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-2">
             {drills.length === 0 ? 'No drills yet' : 'No drills found'}
           </h3>
@@ -290,7 +290,7 @@ export default function DrillLibrary() {
           </p>
           {drills.length === 0 && (
             <Button onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-2 mx-auto">
-              <Plus size={20} />
+              <PlusIcon size={20} />
               Create Your First Drill
             </Button>
           )}
@@ -398,7 +398,7 @@ function DrillCard({
             <div className="flex items-center gap-4 mt-2 text-sm text-slate-500">
               {drill.durationMinutes && (
                 <span className="flex items-center gap-1">
-                  <Clock size={14} />
+                  <ClockIcon size={14} />
                   {drill.durationMinutes} min
                 </span>
               )}
@@ -429,7 +429,7 @@ function DrillCard({
               }}
               className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-600"
             >
-              <Edit size={18} />
+              <PencilIcon size={18} />
             </button>
             <button
               onClick={(e) => {
@@ -438,7 +438,7 @@ function DrillCard({
               }}
               className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-600"
             >
-              <Copy size={18} />
+              <DocumentDuplicateIcon size={18} />
             </button>
             <button
               onClick={(e) => {
@@ -447,7 +447,7 @@ function DrillCard({
               }}
               className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600"
             >
-              <Trash2 size={18} />
+              <TrashIcon size={18} />
             </button>
           </div>
         </div>
@@ -491,7 +491,7 @@ function DrillCard({
       <div className="flex items-center justify-between text-sm text-slate-500 mb-4">
         {drill.durationMinutes && (
           <span className="flex items-center gap-1">
-            <Clock size={14} />
+            <ClockIcon size={14} />
             {drill.durationMinutes} min
           </span>
         )}
@@ -508,7 +508,7 @@ function DrillCard({
           }}
           className="flex-1 flex items-center justify-center gap-1"
         >
-          <Edit size={16} />
+          <PencilIcon size={16} />
           Edit
         </Button>
         <Button
@@ -520,7 +520,7 @@ function DrillCard({
           }}
           className="flex-1 flex items-center justify-center gap-1"
         >
-          <Copy size={16} />
+          <DocumentDuplicateIcon size={16} />
           Copy
         </Button>
       </div>

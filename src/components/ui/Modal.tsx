@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from 'react'
-import { X } from 'lucide-react'
+import { XMarkIcon } from '@heroicons/react/24/solid'
 
 interface ModalProps {
   isOpen: boolean
@@ -51,7 +51,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
               onClick={onClose}
               className="text-slate-400 hover:text-slate-600 transition-colors"
             >
-              <X size={24} />
+              <XMarkIcon size={24} />
             </button>
           </div>
 

@@ -7,20 +7,20 @@ import { statisticsService } from '@/services/statistics.service'
 import { noteService } from '@/services/note.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import {
-  Users,
-  Calendar,
-  BookOpen,
-  TrendingUp,
-  MessageSquare,
-  ArrowRight,
-  CheckCircle,
-  Clock,
-  Target,
-  Award,
-  Flame,
-  Eye,
-  AlertCircle,
-} from 'lucide-react'
+  UsersIcon,
+  CalendarIcon,
+  BookOpenIcon,
+  ArrowTrendingUpIcon,
+  ChatBubbleLeftIcon,
+  ArrowRightIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  TargetIcon,
+  TrophyIcon,
+  FireIcon,
+  EyeIcon,
+  ExclamationCircleIcon,
+} from '@heroicons/react/24/solid'
 import { CoachPlayer, PracticeWithDetails, PlayerStatistic, CoachNote, PlayerStatsAggregate } from '@/types'
 import { format, isToday, isTomorrow, differenceInDays } from 'date-fns'
 
@@ -146,7 +146,7 @@ export default function PlayerDashboard() {
               onClick={() => navigate(`/practices/${practice.id}`)}
             >
               <div className="flex items-center gap-3 mb-3">
-                <AlertCircle className="h-6 w-6" />
+                <ExclamationCircleIcon className="h-6 w-6" />
                 <h2 className="text-xl font-bold">Practice Today!</h2>
               </div>
               <div className="bg-white/20 backdrop-blur rounded-lg p-4">
@@ -202,7 +202,7 @@ export default function PlayerDashboard() {
           {stats && (
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
               <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                <Target className="h-5 w-5" />
+                <TargetIcon className="h-5 w-5" />
                 Your Progress
               </h2>
               
@@ -235,7 +235,7 @@ export default function PlayerDashboard() {
                 {/* Streak */}
                 <div className="text-center p-4 bg-orange-50 rounded-lg">
                   <div className="text-3xl font-bold text-orange-600 mb-1 flex items-center justify-center gap-2">
-                    <Flame className="h-8 w-8" />
+                    <FireIcon className="h-8 w-8" />
                     {stats.currentStreak}
                   </div>
                   <div className="text-sm text-slate-600">Day Streak</div>
@@ -249,7 +249,7 @@ export default function PlayerDashboard() {
               <div className="mt-4 space-y-2">
                 {stats.attendanceRate >= 90 && (
                   <div className="flex items-start gap-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
-                    <Award className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <TrophyIcon className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-emerald-900">Outstanding Attendance!</p>
                       <p className="text-xs text-emerald-700">You're in the top tier of performers!</p>
@@ -258,7 +258,7 @@ export default function PlayerDashboard() {
                 )}
                 {stats.currentStreak >= 7 && (
                   <div className="flex items-start gap-2 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                    <Flame className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                    <FireIcon className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-orange-900">Amazing Streak!</p>
                       <p className="text-xs text-orange-700">Keep it up to reach 14 days!</p>
@@ -267,7 +267,7 @@ export default function PlayerDashboard() {
                 )}
                 {stats.attendanceRate < 70 && (
                   <div className="flex items-start gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                    <ExclamationCircleIcon className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-yellow-900">Let's Improve Together</p>
                       <p className="text-xs text-yellow-700">Try to attend more practices to boost your progress!</p>
@@ -282,7 +282,7 @@ export default function PlayerDashboard() {
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
               <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
+                <CalendarIcon className="h-5 w-5" />
                 Upcoming Practices
               </h2>
               <button
@@ -290,13 +290,13 @@ export default function PlayerDashboard() {
                 className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
               >
                 View all
-                <ArrowRight size={16} />
+                <ArrowRightIcon size={16} />
               </button>
             </div>
             <div className="p-6">
               {upcomingPractices.length === 0 ? (
                 <div className="text-center py-12">
-                  <Calendar className="mx-auto h-12 w-12 text-slate-400 mb-4" />
+                  <CalendarIcon className="mx-auto h-12 w-12 text-slate-400 mb-4" />
                   <h3 className="text-sm font-medium text-slate-900 mb-2">No upcoming practices</h3>
                   <p className="text-sm text-slate-600">
                     Your coach will schedule practices soon
@@ -348,7 +348,7 @@ export default function PlayerDashboard() {
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
               <div className="px-6 py-4 border-b border-slate-200">
                 <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                  <Eye className="h-5 w-5" />
+                  <EyeIcon className="h-5 w-5" />
                   Recent Feedback from Coaches
                 </h2>
               </div>
@@ -402,7 +402,7 @@ export default function PlayerDashboard() {
               onClick={() => navigate('/practices')}
               className="w-full bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-emerald-500/20 hover:shadow-xl"
             >
-              <Calendar className="mb-2" size={24} />
+              <CalendarIcon className="mb-2" size={24} />
               <h3 className="text-lg font-semibold mb-1">My Practices</h3>
               <p className="text-emerald-100 text-sm">View schedule & details</p>
             </button>
@@ -411,7 +411,7 @@ export default function PlayerDashboard() {
               onClick={() => navigate('/drills')}
               className="w-full bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-blue-500/20 hover:shadow-xl"
             >
-              <BookOpen className="mb-2" size={24} />
+              <BookOpenIcon className="mb-2" size={24} />
               <h3 className="text-lg font-semibold mb-1">Practice Drills</h3>
               <p className="text-blue-100 text-sm">Review assigned drills</p>
             </button>
@@ -420,7 +420,7 @@ export default function PlayerDashboard() {
               onClick={() => navigate('/progress')}
               className="w-full bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-purple-500/20 hover:shadow-xl"
             >
-              <TrendingUp className="mb-2" size={24} />
+              <ArrowTrendingUpIcon className="mb-2" size={24} />
               <h3 className="text-lg font-semibold mb-1">My Progress</h3>
               <p className="text-purple-100 text-sm">Track your improvement</p>
             </button>
@@ -429,7 +429,7 @@ export default function PlayerDashboard() {
               onClick={() => navigate('/player/announcements')}
               className="w-full bg-gradient-to-br from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-indigo-500/20 hover:shadow-xl"
             >
-              <MessageSquare className="mb-2" size={24} />
+              <ChatBubbleLeftIcon className="mb-2" size={24} />
               <h3 className="text-lg font-semibold mb-1">Announcements</h3>
               <p className="text-indigo-100 text-sm">View coach updates</p>
             </button>
@@ -439,14 +439,14 @@ export default function PlayerDashboard() {
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-200">
               <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                <Users className="h-5 w-5" />
+                <UsersIcon className="h-5 w-5" />
                 My Coaches
               </h2>
             </div>
             <div className="p-4">
               {myCoaches.length === 0 ? (
                 <div className="text-center py-8">
-                  <Users className="mx-auto h-10 w-10 text-slate-400 mb-3" />
+                  <UsersIcon className="mx-auto h-10 w-10 text-slate-400 mb-3" />
                   <p className="text-sm text-slate-600">
                     No coaches yet
                   </p>

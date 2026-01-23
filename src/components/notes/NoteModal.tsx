@@ -4,7 +4,7 @@ import Button from '@/components/ui/Button'
 import TextArea from '@/components/ui/TextArea'
 import Select from '@/components/ui/Select'
 import { CoachNote, NoteType } from '@/types'
-import { X, Plus } from 'lucide-react'
+import { XMarkIcon, PlusIcon } from '@heroicons/react/24/solid'
 
 interface NoteModalProps {
   isOpen: boolean
@@ -169,7 +169,7 @@ export default function NoteModal({
               variant="secondary"
               className="flex items-center gap-1"
             >
-              <Plus size={16} />
+              <PlusIcon size={16} />
               Add
             </Button>
           </div>
@@ -186,7 +186,7 @@ export default function NoteModal({
                     onClick={() => handleRemoveTag(tag)}
                     className="hover:text-blue-900"
                   >
-                    <X size={14} />
+                    <XMarkIcon size={14} />
                   </button>
                 </span>
               ))}
