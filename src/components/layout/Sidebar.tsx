@@ -2,20 +2,20 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import {
-  LayoutDashboard,
-  Users,
-  BookOpen,
-  Calendar,
-  ClipboardList,
-  Library,
-  FolderOpen,
-  MessageSquare,
-  Menu,
-  X,
-  LogOut,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react'
+  Squares2X2Icon,
+  UsersIcon,
+  BookOpenIcon,
+  CalendarIcon,
+  ClipboardDocumentListIcon,
+  BuildingLibraryIcon,
+  FolderOpenIcon,
+  ChatBubbleLeftIcon,
+  Bars3Icon,
+  XMarkIcon,
+  ArrowLeftOnRectangleIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from '@heroicons/react/24/solid'
 
 interface NavItem {
   name: string
@@ -25,14 +25,14 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['coach', 'player'] },
-  { name: 'Players', path: '/coach/players', icon: Users, roles: ['coach'] },
-  { name: 'My Coaches', path: '/player/coaches', icon: Users, roles: ['player'] },
-  { name: 'Drills', path: '/drills', icon: BookOpen, roles: ['coach', 'player'] },
-  { name: 'Practices', path: '/coach/practices', icon: Calendar, roles: ['coach'] },
-  { name: 'Practice Plans', path: '/coach/plans', icon: ClipboardList, roles: ['coach'] },
-  { name: 'Library', path: '/library', icon: Library, roles: ['coach', 'player'] },
-  { name: 'Files', path: '/files', icon: FolderOpen, roles: ['coach', 'player'] },
+  { name: 'Dashboard', path: '/dashboard', icon: Squares2X2Icon, roles: ['coach', 'player'] },
+  { name: 'Players', path: '/coach/players', icon: UsersIcon, roles: ['coach'] },
+  { name: 'My Coaches', path: '/player/coaches', icon: UsersIcon, roles: ['player'] },
+  { name: 'Drills', path: '/drills', icon: BookOpenIcon, roles: ['coach', 'player'] },
+  { name: 'Practices', path: '/coach/practices', icon: CalendarIcon, roles: ['coach'] },
+  { name: 'Practice Plans', path: '/coach/plans', icon: ClipboardDocumentListIcon, roles: ['coach'] },
+  { name: 'Library', path: '/library', icon: BuildingLibraryIcon, roles: ['coach', 'player'] },
+  { name: 'Files', path: '/files', icon: FolderOpenIcon, roles: ['coach', 'player'] },
 ]
 
 interface SidebarProps {
@@ -89,13 +89,13 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               onClick={() => setIsOpen(false)}
               className="lg:hidden text-slate-400 hover:text-white p-1"
             >
-              <X size={24} />
+              <XMarkIcon size={24} />
             </button>
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
               className="hidden lg:block text-slate-400 hover:text-white p-1"
             >
-              {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+              {isCollapsed ? <ChevronRightIcon size={20} /> : <ChevronLeftIcon size={20} />}
             </button>
           </div>
 
@@ -139,7 +139,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               `}
               title={isCollapsed ? 'AI Assistant' : undefined}
             >
-              <MessageSquare size={20} />
+              <ChatBubbleLeftIcon size={20} />
               {!isCollapsed && <span className="font-medium">AI Assistant</span>}
             </Link>
           </div>
@@ -165,7 +165,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                     className="text-slate-400 hover:text-red-400 transition-colors"
                     title="Logout"
                   >
-                    <LogOut size={18} />
+                    <ArrowLeftOnRectangleIcon size={18} />
                   </button>
                 </>
               )}
@@ -175,7 +175,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   className="text-slate-400 hover:text-red-400 transition-colors"
                   title="Logout"
                 >
-                  <LogOut size={20} />
+                  <ArrowLeftOnRectangleIcon size={20} />
                 </button>
               )}
             </div>

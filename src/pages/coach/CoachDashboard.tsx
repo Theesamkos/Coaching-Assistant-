@@ -502,7 +502,7 @@ export default function CoachDashboard() {
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-200">
               <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                <Target className="h-5 w-5" />
+                <TargetIcon className="h-5 w-5" />
                 Recent Activity
               </h2>
             </div>

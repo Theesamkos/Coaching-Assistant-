@@ -10,12 +10,12 @@ import { format, parse, startOfWeek, getDay, addMonths, subMonths } from 'date-f
 import { enUS } from 'date-fns/locale'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import {
-  ChevronLeft,
-  ChevronRight,
-  Calendar as CalendarIcon,
-  Plus,
-  Filter,
-} from 'lucide-react'
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CalendarIcon,
+  PlusIcon,
+  FunnelIcon,
+} from '@heroicons/react/24/solid'
 
 // Setup the localizer for react-big-calendar
 const locales = {
@@ -210,7 +210,7 @@ export default function CalendarPage() {
             onClick={() => navigate('/coach/practices/create')}
             className="flex items-center gap-2"
           >
-            <Plus className="h-5 w-5" />
+            <PlusIcon className="h-5 w-5" />
             New Practice
           </Button>
         </div>
@@ -225,7 +225,7 @@ export default function CalendarPage() {
               onClick={goToPrevious}
               className="p-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-white"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeftIcon className="h-5 w-5" />
             </button>
             <button
               onClick={goToToday}
@@ -237,7 +237,7 @@ export default function CalendarPage() {
               onClick={goToNext}
               className="p-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-white"
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRightIcon className="h-5 w-5" />
             </button>
             <span className="text-white font-semibold text-lg ml-4">
               {format(date, 'MMMM yyyy')}
@@ -263,7 +263,7 @@ export default function CalendarPage() {
 
           {/* Status Filter */}
           <div className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-slate-400" />
+            <FunnelIcon className="h-5 w-5 text-slate-400" />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}

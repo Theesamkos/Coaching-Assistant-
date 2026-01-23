@@ -2,16 +2,16 @@ import Modal from '@/components/ui/Modal'
 import Button from '@/components/ui/Button'
 import { Drill } from '@/types'
 import {
-  Star,
-  Clock,
-  Target,
-  Package,
-  ListOrdered,
-  Video,
-  Edit,
-  Copy,
-  Trash2,
-} from 'lucide-react'
+  StarIcon,
+  ClockIcon,
+  TargetIcon,
+  CubeIcon,
+  ListBulletIcon,
+  VideoCameraIcon,
+  PencilIcon,
+  DocumentDuplicateIcon,
+  TrashIcon,
+} from '@heroicons/react/24/solid'
 
 interface DrillDetailModalProps {
   isOpen: boolean
@@ -61,7 +61,7 @@ export default function DrillDetailModal({
           
           {drill.durationMinutes && (
             <span className="flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-700 border border-slate-300">
-              <Clock size={14} />
+              <ClockIcon size={14} />
               {drill.durationMinutes} minutes
             </span>
           )}
@@ -74,7 +74,7 @@ export default function DrillDetailModal({
                 : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
             }`}
           >
-            <Star size={20} fill={drill.isFavorite ? 'currentColor' : 'none'} />
+            <StarIcon size={20} fill={drill.isFavorite ? 'currentColor' : 'none'} />
           </button>
         </div>
 
@@ -90,7 +90,7 @@ export default function DrillDetailModal({
         {drill.objectives && drill.objectives.length > 0 && (
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <Target size={20} className="text-blue-600" />
+              <TargetIcon size={20} className="text-blue-600" />
               Objectives
             </h3>
             <ul className="space-y-2">
@@ -110,7 +110,7 @@ export default function DrillDetailModal({
         {drill.equipmentNeeded && drill.equipmentNeeded.length > 0 && (
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <Package size={20} className="text-purple-600" />
+              <CubeIcon size={20} className="text-purple-600" />
               Equipment Needed
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -130,7 +130,7 @@ export default function DrillDetailModal({
         {drill.instructions && (
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <ListOrdered size={20} className="text-green-600" />
+              <ListBulletIcon size={20} className="text-green-600" />
               Instructions
             </h3>
             <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
@@ -145,7 +145,7 @@ export default function DrillDetailModal({
         {drill.videoUrl && (
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <Video size={20} className="text-red-600" />
+              <VideoCameraIcon size={20} className="text-red-600" />
               Video Reference
             </h3>
             <a
@@ -154,7 +154,7 @@ export default function DrillDetailModal({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors border border-red-200"
             >
-              <Video size={16} />
+              <VideoCameraIcon size={16} />
               Watch Video
               <svg
                 className="w-4 h-4"
@@ -180,7 +180,7 @@ export default function DrillDetailModal({
             onClick={onEdit}
             className="flex-1 flex items-center justify-center gap-2"
           >
-            <Edit size={18} />
+            <PencilIcon size={18} />
             Edit Drill
           </Button>
           <Button
@@ -188,7 +188,7 @@ export default function DrillDetailModal({
             onClick={onDuplicate}
             className="flex-1 flex items-center justify-center gap-2"
           >
-            <Copy size={18} />
+            <DocumentDuplicateIcon size={18} />
             Duplicate
           </Button>
           <Button
@@ -196,7 +196,7 @@ export default function DrillDetailModal({
             onClick={onDelete}
             className="flex-1 flex items-center justify-center gap-2"
           >
-            <Trash2 size={18} />
+            <TrashIcon size={18} />
             Delete
           </Button>
         </div>
