@@ -219,7 +219,7 @@ export default function DrillModal({ isOpen, onClose, onSuccess, drill }: DrillM
               className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <Button type="button" onClick={addObjective} variant="secondary">
-              <PlusIcon size={20} />
+              <PlusIcon className="h-5 w-5" />
             </Button>
           </div>
           {objectives.length > 0 && (
@@ -235,7 +235,7 @@ export default function DrillModal({ isOpen, onClose, onSuccess, drill }: DrillM
                     onClick={() => removeObjective(index)}
                     className="text-red-600 hover:text-red-700"
                   >
-                    <XMarkIcon size={16} />
+                    <XMarkIcon className="h-4 w-4" />
                   </button>
                 </div>
               ))}
@@ -258,7 +258,7 @@ export default function DrillModal({ isOpen, onClose, onSuccess, drill }: DrillM
               className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <Button type="button" onClick={addEquipment} variant="secondary">
-              <PlusIcon size={20} />
+              <PlusIcon className="h-5 w-5" />
             </Button>
           </div>
           {equipmentNeeded.length > 0 && (
@@ -274,7 +274,7 @@ export default function DrillModal({ isOpen, onClose, onSuccess, drill }: DrillM
                     onClick={() => removeEquipment(index)}
                     className="text-red-600 hover:text-red-700"
                   >
-                    <XMarkIcon size={16} />
+                    <XMarkIcon className="h-4 w-4" />
                   </button>
                 </div>
               ))}

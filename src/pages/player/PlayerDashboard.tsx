@@ -15,7 +15,7 @@ import {
   ArrowRightIcon,
   CheckCircleIcon,
   ClockIcon,
-  TargetIcon,
+  FlagIcon,
   TrophyIcon,
   FireIcon,
   EyeIcon,
@@ -165,28 +165,28 @@ export default function PlayerDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <StatCard
-          icon={TrendingUp}
+          icon={ArrowTrendingUpIcon}
           label="Attendance Rate"
           value={dashboardStats.progressScore}
           color="blue"
           subtitle={stats ? `${stats.totalPractices} practices` : 'No data yet'}
         />
         <StatCard
-          icon={Calendar}
+          icon={CalendarIcon}
           label="Upcoming Sessions"
           value={dashboardStats.upcomingPractices}
           color="emerald"
           subtitle="Scheduled practices"
         />
         <StatCard
-          icon={CheckCircle}
+          icon={CheckCircleIcon}
           label="Drills Completed"
           value={dashboardStats.completedDrills}
           color="purple"
           subtitle="Total drills finished"
         />
         <StatCard
-          icon={Flame}
+          icon={FireIcon}
           label="Current Streak"
           value={stats?.currentStreak || 0}
           color="amber"
@@ -202,7 +202,7 @@ export default function PlayerDashboard() {
           {stats && (
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
               <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                <TargetIcon className="h-5 w-5" />
+                <FlagIcon className="h-5 w-5" />
                 Your Progress
               </h2>
               
@@ -290,7 +290,7 @@ export default function PlayerDashboard() {
                 className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
               >
                 View all
-                <ArrowRightIcon size={16} />
+                <ArrowRightIcon className="h-4 w-4" />
               </button>
             </div>
             <div className="p-6">
@@ -402,7 +402,7 @@ export default function PlayerDashboard() {
               onClick={() => navigate('/practices')}
               className="w-full bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-emerald-500/20 hover:shadow-xl"
             >
-              <CalendarIcon className="mb-2" size={24} />
+              <CalendarIcon className="mb-2 h-6 w-6" />
               <h3 className="text-lg font-semibold mb-1">My Practices</h3>
               <p className="text-emerald-100 text-sm">View schedule & details</p>
             </button>
@@ -411,7 +411,7 @@ export default function PlayerDashboard() {
               onClick={() => navigate('/drills')}
               className="w-full bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-blue-500/20 hover:shadow-xl"
             >
-              <BookOpenIcon className="mb-2" size={24} />
+              <BookOpenIcon className="mb-2 h-6 w-6" />
               <h3 className="text-lg font-semibold mb-1">Practice Drills</h3>
               <p className="text-blue-100 text-sm">Review assigned drills</p>
             </button>
@@ -420,7 +420,7 @@ export default function PlayerDashboard() {
               onClick={() => navigate('/progress')}
               className="w-full bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-purple-500/20 hover:shadow-xl"
             >
-              <ArrowTrendingUpIcon className="mb-2" size={24} />
+              <ArrowTrendingUpIcon className="mb-2 h-6 w-6" />
               <h3 className="text-lg font-semibold mb-1">My Progress</h3>
               <p className="text-purple-100 text-sm">Track your improvement</p>
             </button>
@@ -429,7 +429,7 @@ export default function PlayerDashboard() {
               onClick={() => navigate('/player/announcements')}
               className="w-full bg-gradient-to-br from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-indigo-500/20 hover:shadow-xl"
             >
-              <ChatBubbleLeftIcon className="mb-2" size={24} />
+              <ChatBubbleLeftIcon className="mb-2 h-6 w-6" />
               <h3 className="text-lg font-semibold mb-1">Announcements</h3>
               <p className="text-indigo-100 text-sm">View coach updates</p>
             </button>
@@ -503,7 +503,7 @@ function StatCard({ icon: Icon, label, value, color, onClick, subtitle }: StatCa
       } transition-transform`}
     >
       <div className="flex items-center justify-between mb-4">
-        <Icon size={28} />
+        <Icon className="h-7 w-7" />
       </div>
       <p className="text-3xl font-bold mb-1">{value}</p>
       <p className="text-sm opacity-90 mb-1">{label}</p>

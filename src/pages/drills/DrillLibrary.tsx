@@ -190,7 +190,7 @@ export default function DrillLibrary() {
             </p>
           </div>
           <Button onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-2">
-            <PlusIcon size={20} />
+            <PlusIcon className="h-5 w-5" />
             Create Drill
           </Button>
         </div>
@@ -202,7 +202,7 @@ export default function DrillLibrary() {
           {/* Search */}
           <div className="flex-1">
             <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5" />
               <input
                 type="text"
                 placeholder="Search drills..."
@@ -223,7 +223,7 @@ export default function DrillLibrary() {
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
-              <Squares2X2Icon size={20} />
+              <Squares2X2Icon className="h-5 w-5" />
             </button>
             <button
               onClick={() => setViewMode('list')}
@@ -233,7 +233,7 @@ export default function DrillLibrary() {
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
-              <ListBulletIcon size={20} />
+              <ListBulletIcon className="h-5 w-5" />
             </button>
           </div>
         </div>
@@ -270,7 +270,7 @@ export default function DrillLibrary() {
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            <StarIcon size={18} fill={favoriteFilter ? 'currentColor' : 'none'} />
+            <StarIcon className="h-\[18px\] w-\[18px\]" fill={favoriteFilter ? 'currentColor' : 'none'} />
             Favorites
           </button>
         </div>
@@ -290,7 +290,7 @@ export default function DrillLibrary() {
           </p>
           {drills.length === 0 && (
             <Button onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-2 mx-auto">
-              <PlusIcon size={20} />
+              <PlusIcon className="h-5 w-5" />
               Create Your First Drill
             </Button>
           )}
@@ -398,7 +398,7 @@ function DrillCard({
             <div className="flex items-center gap-4 mt-2 text-sm text-slate-500">
               {drill.durationMinutes && (
                 <span className="flex items-center gap-1">
-                  <ClockIcon size={14} />
+                  <ClockIcon className="h-3.5 w-3.5" />
                   {drill.durationMinutes} min
                 </span>
               )}
@@ -414,9 +414,8 @@ function DrillCard({
               }}
               className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
             >
-              <Star
-                size={18}
-                className={drill.isFavorite ? 'fill-amber-400 text-amber-400' : 'text-slate-400'}
+              <StarIcon
+                className={`h-[18px] w-[18px] ${drill.isFavorite ? 'fill-amber-400 text-amber-400' : 'text-slate-400'}`}
               />
             </button>
             <Button variant="secondary" size="sm" onClick={onView}>
@@ -429,7 +428,7 @@ function DrillCard({
               }}
               className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-600"
             >
-              <PencilIcon size={18} />
+              <PencilIcon className="h-\[18px\] w-\[18px\]" />
             </button>
             <button
               onClick={(e) => {
@@ -438,7 +437,7 @@ function DrillCard({
               }}
               className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-600"
             >
-              <DocumentDuplicateIcon size={18} />
+              <DocumentDuplicateIcon className="h-\[18px\] w-\[18px\]" />
             </button>
             <button
               onClick={(e) => {
@@ -447,7 +446,7 @@ function DrillCard({
               }}
               className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600"
             >
-              <TrashIcon size={18} />
+              <TrashIcon className="h-\[18px\] w-\[18px\]" />
             </button>
           </div>
         </div>
@@ -469,9 +468,8 @@ function DrillCard({
           }}
           className="flex-shrink-0"
         >
-          <Star
-            size={20}
-            className={drill.isFavorite ? 'fill-amber-400 text-amber-400' : 'text-slate-400'}
+          <StarIcon
+            className={`h-5 w-5 ${drill.isFavorite ? 'fill-amber-400 text-amber-400' : 'text-slate-400'}`}
           />
         </button>
       </div>
@@ -491,7 +489,7 @@ function DrillCard({
       <div className="flex items-center justify-between text-sm text-slate-500 mb-4">
         {drill.durationMinutes && (
           <span className="flex items-center gap-1">
-            <ClockIcon size={14} />
+            <ClockIcon className="h-3.5 w-3.5" />
             {drill.durationMinutes} min
           </span>
         )}
@@ -508,7 +506,7 @@ function DrillCard({
           }}
           className="flex-1 flex items-center justify-center gap-1"
         >
-          <PencilIcon size={16} />
+          <PencilIcon className="h-4 w-4" />
           Edit
         </Button>
         <Button
@@ -520,7 +518,7 @@ function DrillCard({
           }}
           className="flex-1 flex items-center justify-center gap-1"
         >
-          <DocumentDuplicateIcon size={16} />
+          <DocumentDuplicateIcon className="h-4 w-4" />
           Copy
         </Button>
       </div>

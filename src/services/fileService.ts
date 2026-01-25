@@ -263,7 +263,7 @@ export const fileService = {
   },
 
   // Helper methods
-  private _mapFileRecord(data: any): FileRecord {
+  _mapFileRecord(data: any): FileRecord {
     return {
       id: data.id,
       uploadedBy: data.uploaded_by,
@@ -280,7 +280,7 @@ export const fileService = {
     }
   },
 
-  private _mapFileWithMetadata(data: any): FileWithMetadata {
+  _mapFileWithMetadata(data: any): FileWithMetadata {
     const fileRecord = this._mapFileRecord(data)
 
     return {

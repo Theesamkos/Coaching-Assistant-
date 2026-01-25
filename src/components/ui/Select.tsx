@@ -4,7 +4,7 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string
   error?: string
   helperText?: string
-  options: { value: string; label: string }[]
+  options?: { value: string; label: string }[]
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
@@ -26,7 +26,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           } ${className}`}
           {...props}
         >
-          {options.map((option) => (
+          {props.children || options?.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>

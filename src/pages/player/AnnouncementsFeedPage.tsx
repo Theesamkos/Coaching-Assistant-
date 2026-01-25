@@ -9,7 +9,7 @@ import {
   MapPinIcon,
   UsersIcon,
   UserIcon,
-  TargetIcon,
+  FlagIcon,
   ClockIcon,
   ExclamationCircleIcon,
   CheckCircleIcon,
@@ -83,7 +83,7 @@ export default function AnnouncementsFeedPage() {
       case 'all':
         return <UsersIcon className="h-4 w-4" />
       case 'team':
-        return <TargetIcon className="h-4 w-4" />
+        return <FlagIcon className="h-4 w-4" />
       case 'individual':
         return <UserIcon className="h-4 w-4" />
       default:

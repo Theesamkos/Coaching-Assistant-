@@ -17,7 +17,7 @@ import {
   TrashIcon,
   UsersIcon,
   UserIcon,
-  TargetIcon,
+  FlagIcon,
   ClockIcon,
   ExclamationCircleIcon,
 } from '@heroicons/react/24/solid'
@@ -157,7 +157,7 @@ export default function AnnouncementsPage() {
       case 'all':
         return <UsersIcon className="h-4 w-4" />
       case 'team':
-        return <TargetIcon className="h-4 w-4" />
+        return <FlagIcon className="h-4 w-4" />
       case 'individual':
         return <UserIcon className="h-4 w-4" />
       default:

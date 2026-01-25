@@ -89,13 +89,13 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               onClick={() => setIsOpen(false)}
               className="lg:hidden text-slate-400 hover:text-white p-1"
             >
-              <XMarkIcon size={24} />
+              <XMarkIcon className="h-6 w-6" />
             </button>
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
               className="hidden lg:block text-slate-400 hover:text-white p-1"
             >
-              {isCollapsed ? <ChevronRightIcon size={20} /> : <ChevronLeftIcon size={20} />}
+              {isCollapsed ? <ChevronRightIcon className="h-5 w-5" /> : <ChevronLeftIcon className="h-5 w-5" />}
             </button>
           </div>
 
@@ -120,7 +120,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                     `}
                     title={isCollapsed ? item.name : undefined}
                   >
-                    <Icon size={20} />
+                    <Icon className="h-5 w-5" />
                     {!isCollapsed && <span className="font-medium">{item.name}</span>}
                   </Link>
                 )
@@ -139,7 +139,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               `}
               title={isCollapsed ? 'AI Assistant' : undefined}
             >
-              <ChatBubbleLeftIcon size={20} />
+              <ChatBubbleLeftIcon className="h-5 w-5" />
               {!isCollapsed && <span className="font-medium">AI Assistant</span>}
             </Link>
           </div>
@@ -165,7 +165,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                     className="text-slate-400 hover:text-red-400 transition-colors"
                     title="Logout"
                   >
-                    <ArrowLeftOnRectangleIcon size={18} />
+                    <ArrowLeftOnRectangleIcon className="h-\[18px\] w-\[18px\]" />
                   </button>
                 </>
               )}
@@ -175,7 +175,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   className="text-slate-400 hover:text-red-400 transition-colors"
                   title="Logout"
                 >
-                  <ArrowLeftOnRectangleIcon size={20} />
+                  <ArrowLeftOnRectangleIcon className="h-5 w-5" />
                 </button>
               )}
             </div>

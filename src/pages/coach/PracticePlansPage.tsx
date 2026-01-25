@@ -115,7 +115,7 @@ export default function PracticePlansPage() {
             onClick={() => navigate('/coach/plans/create')}
             className="flex items-center gap-2"
           >
-            <PlusIcon size={20} />
+            <PlusIcon className="h-5 w-5" />
             Create New Plan
           </Button>
         </div>
@@ -123,7 +123,7 @@ export default function PracticePlansPage() {
         {/* Search & Filters */}
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5" />
             <input
               type="text"
               value={searchTerm}
@@ -168,7 +168,7 @@ export default function PracticePlansPage() {
                   : 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'
               }`}
             >
-              <StarIcon size={20} fill={filters.isFavorite ? 'currentColor' : 'none'} />
+              <StarIcon className="h-5 w-5" fill={filters.isFavorite ? 'currentColor' : 'none'} />
             </button>
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function PracticePlansPage() {
             Create your first practice plan template to get started
           </p>
           <Button onClick={() => navigate('/coach/plans/create')}>
-            <PlusIcon size={20} className="mr-2" />
+            <PlusIcon className="h-5 w-5 mr-2" />
             Create First Plan
           </Button>
         </div>
@@ -262,35 +262,35 @@ function PlanCard({ plan, onView, onEdit, onDuplicate, onDelete, onToggleFavorit
               onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
               className="text-slate-400 hover:text-yellow-500 transition-colors"
             >
-              <StarIcon size={18} fill={plan.isFavorite ? 'currentColor' : 'none'} />
+              <StarIcon className="h-\[18px\] w-\[18px\]" fill={plan.isFavorite ? 'currentColor' : 'none'} />
             </button>
             <div className="relative">
               <button
                 onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
                 className="text-slate-400 hover:text-white transition-colors"
               >
-                <EllipsisVerticalIcon size={18} />
+                <EllipsisVerticalIcon className="h-\[18px\] w-\[18px\]" />
               </button>
               {showMenu && (
                 <div className="absolute right-0 top-8 bg-slate-700 border border-slate-600 rounded-lg shadow-xl z-10 py-1 min-w-[150px]">
                   <button onClick={onView} className="w-full px-4 py-2 text-left text-white hover:bg-slate-600 flex items-center gap-2">
-                    <EyeIcon size={16} /> View
+                    <EyeIcon className="h-4 w-4" /> View
                   </button>
                   {isOwner && (
                     <button onClick={onEdit} className="w-full px-4 py-2 text-left text-white hover:bg-slate-600 flex items-center gap-2">
-                      <PencilIcon size={16} /> Edit
+                      <PencilIcon className="h-4 w-4" /> Edit
                     </button>
                   )}
                   <button onClick={onDuplicate} className="w-full px-4 py-2 text-left text-white hover:bg-slate-600 flex items-center gap-2">
-                    <DocumentDuplicateIcon size={16} /> Duplicate
+                    <DocumentDuplicateIcon className="h-4 w-4" /> Duplicate
                   </button>
                   {isOwner && (
                     <>
                       <button onClick={() => {}} className="w-full px-4 py-2 text-left text-white hover:bg-slate-600 flex items-center gap-2">
-                        <ShareIcon size={16} /> Share
+                        <ShareIcon className="h-4 w-4" /> Share
                       </button>
                       <button onClick={onDelete} className="w-full px-4 py-2 text-left text-red-400 hover:bg-slate-600 flex items-center gap-2">
-                        <TrashIcon size={16} /> Delete
+                        <TrashIcon className="h-4 w-4" /> Delete
                       </button>
                     </>
                   )}
@@ -336,13 +336,13 @@ function PlanCard({ plan, onView, onEdit, onDuplicate, onDelete, onToggleFavorit
         <div className="grid grid-cols-2 gap-3 text-sm">
           {plan.ageGroup && (
             <div className="flex items-center gap-2 text-slate-400">
-              <UsersIcon size={16} />
+              <UsersIcon className="h-4 w-4" />
               <span>{plan.ageGroup}</span>
             </div>
           )}
           {plan.totalDurationMinutes && (
             <div className="flex items-center gap-2 text-slate-400">
-              <ClockIcon size={16} />
+              <ClockIcon className="h-4 w-4" />
               <span>{plan.totalDurationMinutes} min</span>
             </div>
           )}

@@ -33,7 +33,7 @@ export default function DashboardLayout({
             onClick={() => setSidebarOpen(true)}
             className="text-slate-300 hover:text-white"
           >
-            <Bars3Icon size={24} />
+            <Bars3Icon className="h-6 w-6" />
           </button>
           <h1 className="text-lg font-semibold text-white">Coaching Assistant</h1>
         </div>
