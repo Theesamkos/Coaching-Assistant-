@@ -51,7 +51,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
               onClick={onClose}
               className="text-slate-400 hover:text-slate-600 transition-colors"
             >
-              <XMarkIcon size={24} />
+              <XMarkIcon className="h-6 w-6" />
             </button>
           </div>
 

@@ -169,7 +169,7 @@ export default function NoteModal({
               variant="secondary"
               className="flex items-center gap-1"
             >
-              <PlusIcon size={16} />
+              <PlusIcon className="h-4 w-4" />
               Add
             </Button>
           </div>
@@ -186,7 +186,7 @@ export default function NoteModal({
                     onClick={() => handleRemoveTag(tag)}
                     className="hover:text-blue-900"
                   >
-                    <XMarkIcon size={14} />
+                    <XMarkIcon className="h-3.5 w-3.5" />
                   </button>
                 </span>
               ))}

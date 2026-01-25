@@ -4,7 +4,7 @@ import { Drill } from '@/types'
 import {
   StarIcon,
   ClockIcon,
-  TargetIcon,
+  FlagIcon,
   CubeIcon,
   ListBulletIcon,
   VideoCameraIcon,
@@ -61,7 +61,7 @@ export default function DrillDetailModal({
           
           {drill.durationMinutes && (
             <span className="flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-700 border border-slate-300">
-              <ClockIcon size={14} />
+              <ClockIcon className="h-3.5 w-3.5" />
               {drill.durationMinutes} minutes
             </span>
           )}
@@ -74,7 +74,7 @@ export default function DrillDetailModal({
                 : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
             }`}
           >
-            <StarIcon size={20} fill={drill.isFavorite ? 'currentColor' : 'none'} />
+            <StarIcon className="h-5 w-5" fill={drill.isFavorite ? 'currentColor' : 'none'} />
           </button>
         </div>
 
@@ -90,7 +90,7 @@ export default function DrillDetailModal({
         {drill.objectives && drill.objectives.length > 0 && (
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <TargetIcon size={20} className="text-blue-600" />
+              <FlagIcon className="h-5 w-5 text-blue-600" />
               Objectives
             </h3>
             <ul className="space-y-2">
@@ -110,7 +110,7 @@ export default function DrillDetailModal({
         {drill.equipmentNeeded && drill.equipmentNeeded.length > 0 && (
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <CubeIcon size={20} className="text-purple-600" />
+              <CubeIcon className="h-5 w-5 text-purple-600" />
               Equipment Needed
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -130,7 +130,7 @@ export default function DrillDetailModal({
         {drill.instructions && (
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <ListBulletIcon size={20} className="text-green-600" />
+              <ListBulletIcon className="h-5 w-5 text-green-600" />
               Instructions
             </h3>
             <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
@@ -145,7 +145,7 @@ export default function DrillDetailModal({
         {drill.videoUrl && (
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <VideoCameraIcon size={20} className="text-red-600" />
+              <VideoCameraIcon className="h-5 w-5 text-red-600" />
               Video Reference
             </h3>
             <a
@@ -154,7 +154,7 @@ export default function DrillDetailModal({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors border border-red-200"
             >
-              <VideoCameraIcon size={16} />
+              <VideoCameraIcon className="h-4 w-4" />
               Watch Video
               <svg
                 className="w-4 h-4"
@@ -180,7 +180,7 @@ export default function DrillDetailModal({
             onClick={onEdit}
             className="flex-1 flex items-center justify-center gap-2"
           >
-            <PencilIcon size={18} />
+            <PencilIcon className="h-\[18px\] w-\[18px\]" />
             Edit Drill
           </Button>
           <Button
@@ -188,7 +188,7 @@ export default function DrillDetailModal({
             onClick={onDuplicate}
             className="flex-1 flex items-center justify-center gap-2"
           >
-            <DocumentDuplicateIcon size={18} />
+            <DocumentDuplicateIcon className="h-\[18px\] w-\[18px\]" />
             Duplicate
           </Button>
           <Button
@@ -196,7 +196,7 @@ export default function DrillDetailModal({
             onClick={onDelete}
             className="flex-1 flex items-center justify-center gap-2"
           >
-            <TrashIcon size={18} />
+            <TrashIcon className="h-\[18px\] w-\[18px\]" />
             Delete
           </Button>
         </div>

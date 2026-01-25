@@ -21,7 +21,7 @@ import {
   BellIcon,
   SparklesIcon,
   ChartBarIcon,
-  TargetIcon,
+  FlagIcon,
   ChatBubbleLeftIcon,
 } from '@heroicons/react/24/solid'
 import { CoachPlayer, Practice, Drill, EnhancedPlayer, PlayerStatistic } from '@/types'
@@ -435,7 +435,7 @@ export default function CoachDashboard() {
                 className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
               >
                 View all
-                <ArrowRightIcon size={16} />
+                <ArrowRightIcon className="h-4 w-4" />
               </button>
             </div>
             <div className="p-6">
@@ -502,7 +502,7 @@ export default function CoachDashboard() {
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-200">
               <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                <TargetIcon className="h-5 w-5" />
+                <FlagIcon className="h-5 w-5" />
                 Recent Activity
               </h2>
             </div>
@@ -559,7 +559,7 @@ export default function CoachDashboard() {
               onClick={() => navigate('/coach/drills')}
               className="w-full bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-purple-500/20 hover:shadow-xl"
             >
-              <BookOpen className="mb-2" size={24} />
+              <BookOpenIcon className="mb-2 h-6 w-6" />
               <h3 className="text-lg font-semibold mb-1">Drill Library</h3>
               <p className="text-purple-100 text-sm">Browse and create drills</p>
             </button>
@@ -568,7 +568,7 @@ export default function CoachDashboard() {
               onClick={() => navigate('/coach/analytics')}
               className="w-full bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-amber-500/20 hover:shadow-xl"
             >
-              <BarChart3 className="mb-2" size={24} />
+              <ChartBarIcon className="mb-2 h-6 w-6" />
               <h3 className="text-lg font-semibold mb-1">Team Analytics</h3>
               <p className="text-amber-100 text-sm">View performance insights</p>
             </button>
@@ -577,7 +577,7 @@ export default function CoachDashboard() {
               onClick={() => navigate('/coach/announcements')}
               className="w-full bg-gradient-to-br from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-xl p-5 text-left transition-all shadow-lg shadow-indigo-500/20 hover:shadow-xl"
             >
-              <ChatBubbleLeftIcon className="mb-2" size={24} />
+              <ChatBubbleLeftIcon className="mb-2 h-6 w-6" />
               <h3 className="text-lg font-semibold mb-1">Announcements</h3>
               <p className="text-indigo-100 text-sm">Post updates to your team</p>
             </button>
@@ -649,7 +649,7 @@ function StatCard({ icon: Icon, label, value, total, color, onClick, subtitle }:
       className={`bg-gradient-to-br ${colorClasses[color]} rounded-xl p-6 text-white shadow-lg cursor-pointer hover:scale-105 transition-transform`}
     >
       <div className="flex items-center justify-between mb-4">
-        <Icon size={28} />
+        <Icon className="h-7 w-7" />
       </div>
       <p className="text-3xl font-bold mb-1">{value}</p>
       <p className="text-sm opacity-90 mb-1">{label}</p>
