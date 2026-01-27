@@ -22,6 +22,7 @@ import CalendarPage from '@/pages/coach/CalendarPage'
 import AnnouncementsFeedPage from '@/pages/player/AnnouncementsFeedPage'
 import PracticePlansPage from '@/pages/coach/PracticePlansPage'
 import DrillLibrary from '@/pages/drills/DrillLibrary'
+import FilesPage from '@/pages/FilesPage'
 import ProtectedRoute from '@/components/routing/ProtectedRoute'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import ServicesTestPage from '@/pages/test/ServicesTestPage'
@@ -55,12 +56,9 @@ function AppRoutes() {
         path="/forgot-password"
         element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <ForgotPasswordPage />}
       />
-      
+
       {/* Invitation acceptance page - accessible to both logged in and logged out users */}
-      <Route
-        path="/invite/:token"
-        element={<AcceptInvitePage />}
-      />
+      <Route path="/invite/:token" element={<AcceptInvitePage />} />
 
       {/* Protected routes */}
       <Route
@@ -71,16 +69,12 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      
+
       <Route
         path="/dashboard"
         element={
           <ProtectedRoute>
-            {needsProfileSetup ? (
-              <Navigate to="/profile-setup" replace />
-            ) : (
-              <DashboardComponent />
-            )}
+            {needsProfileSetup ? <Navigate to="/profile-setup" replace /> : <DashboardComponent />}
           </ProtectedRoute>
         }
       />
@@ -250,7 +244,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      
+
       <Route
         path="/coach/drills"
         element={
@@ -292,12 +286,7 @@ function AppRoutes() {
         path="/library"
         element={
           <ProtectedRoute>
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-slate-900 mb-2">Library</h1>
-                <p className="text-slate-600">Coming soon...</p>
-              </div>
-            </div>
+            <DrillLibrary />
           </ProtectedRoute>
         }
       />
@@ -306,12 +295,7 @@ function AppRoutes() {
         path="/files"
         element={
           <ProtectedRoute>
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-slate-900 mb-2">Files</h1>
-                <p className="text-slate-600">Coming soon...</p>
-              </div>
-            </div>
+            <FilesPage />
           </ProtectedRoute>
         }
       />
