@@ -137,8 +137,17 @@ export const fileService = {
   },
 
   async revokeShare(shareId: string): Promise<void> {
-    const { error } = await supabase.from('file_shares').delete().eq('id', shareId)
-    if (error) throw new Error(`Failed to revoke share: ${error.message}`)
+    const resp = await fetch(`/api/files/revoke`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(await this._authHeaders()),
+      },
+      body: JSON.stringify({ shareId }),
+    })
+
+    const body = await resp.json()
+    if (body.error) throw new Error(body.error || 'Failed to revoke share')
   },
 
   async addComment(
@@ -161,19 +170,26 @@ export const fileService = {
   },
 
   async deleteComment(commentId: string): Promise<void> {
-    const { error } = await supabase.from('file_comments').delete().eq('id', commentId)
-    if (error) throw new Error(`Failed to delete comment: ${error.message}`)
+    const resp = await fetch(`/api/files/comments?id=${encodeURIComponent(commentId)}`, {
+      method: 'DELETE',
+      headers: {
+        ...(await this._authHeaders()),
+      },
+    })
+
+    const body = await resp.json()
+    if (body.error) throw new Error(body.error || 'Failed to delete comment')
   },
 
   async getFileComments(fileId: string): Promise<FileComment[]> {
-    const { data, error } = await supabase
-      .from('file_comments')
-      .select('*')
-      .eq('file_id', fileId)
-      .order('created_at', { ascending: false })
+    const params = new URLSearchParams({ fileId })
+    const resp = await fetch(`/api/files/comments?${params.toString()}`, {
+      headers: await this._authHeaders(),
+    })
 
-    if (error) throw new Error(`Failed to fetch comments: ${error.message}`)
-    return data || []
+    const body = await resp.json()
+    if (body.error) throw new Error(body.error || 'Failed to fetch comments')
+    return body.data || []
   },
 
   _mapFileRecord(data: any): FileRecord {
