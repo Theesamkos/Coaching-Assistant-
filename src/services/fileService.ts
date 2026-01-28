@@ -3,50 +3,56 @@
  */
 
 import { supabase } from '../config/supabase'
-import { FileRecord, FileWithMetadata, FileShare, FileComment, FileEntityType, FileUploadOptions, FilePermissionLevel } from '../types'
+import {
+  FileRecord,
+  FileWithMetadata,
+  FileShare,
+  FileComment,
+  FileEntityType,
+  FileUploadOptions,
+  FilePermissionLevel,
+} from '../types'
 
 export const fileService = {
-  /**
-   * Upload a file to Supabase Storage
-   */
+  async _authHeaders(): Promise<Record<string, string>> {
+    try {
+      const session = await supabase.auth.getSession()
+      const token = session.data.session?.access_token
+      if (token) return { Authorization: `Bearer ${token}` }
+    } catch (err) {
+      // ignore
+    }
+    return {}
+  },
+
   async uploadFile(
     file: File,
     entityType: FileEntityType,
     options: Partial<FileUploadOptions> = {}
   ): Promise<{ path: string; url: string }> {
-    const fileName = file.name
-    const filePath = `${entityType}/${Date.now()}-${fileName}`
+    const params = new URLSearchParams({ entityType })
+    const resp = await fetch(`/api/files/presigned?${params.toString()}`, {
+      headers: await this._authHeaders(),
+    })
 
-    const { data, error } = await supabase.storage
-      .from('files')
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false,
-      })
+    const presigned = await resp.json()
+    if (!presigned || !presigned.path) throw new Error('Failed to get upload path')
 
-    if (error) {
-      throw new Error(`File upload failed: ${error.message}`)
-    }
+    const filePath = presigned.path
+    const { error } = await supabase.storage.from('files').upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false,
+    })
 
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from('files').getPublicUrl(filePath)
+    if (error) throw new Error(`File upload failed: ${error.message}`)
 
-    return { path: filePath, url: publicUrl }
+    const { data: publicData } = supabase.storage.from('files').getPublicUrl(filePath)
+    return { path: filePath, url: publicData.publicUrl }
   },
 
-  /**
-   * Create a file record in the database
-   */
-  async createFile(
-    file: File,
-    uploadUrl: string,
-    options: FileUploadOptions
-  ): Promise<FileRecord> {
+  async createFile(file: File, uploadUrl: string, options: FileUploadOptions): Promise<FileRecord> {
     const userId = (await supabase.auth.getUser()).data.user?.id
-    if (!userId) {
-      throw new Error('User not authenticated')
-    }
+    if (!userId) throw new Error('User not authenticated')
 
     const { data, error } = await supabase
       .from('files')
@@ -66,188 +72,99 @@ export const fileService = {
       .select()
       .single()
 
-    if (error) {
-      throw new Error(`Failed to create file record: ${error.message}`)
-    }
-
+    if (error) throw new Error(`Failed to create file record: ${error.message}`)
     return this._mapFileRecord(data)
   },
 
-  /**
-   * Get files for a specific entity
-   */
   async getFilesByEntity(
     entityType: FileEntityType,
     entityId?: string
   ): Promise<FileWithMetadata[]> {
-    let query = supabase
-      .from('files')
-      .select(
-        `
-        *,
-        file_comments(id),
-        file_shares(*)
-      `
-      )
-      .eq('entity_type', entityType)
+    const params = new URLSearchParams({ entityType })
+    if (entityId) params.set('entityId', entityId)
 
-    if (entityId) {
-      query = query.eq('entity_id', entityId)
-    }
+    const resp = await fetch(`/api/files/list?${params.toString()}`, {
+      headers: await this._authHeaders(),
+    })
 
-    const { data, error } = await query
+    const body = await resp.json()
+    if (body.error) throw new Error(body.error)
 
-    if (error) {
-      throw new Error(`Failed to fetch files: ${error.message}`)
-    }
-
-    return (data || []).map((file) => this._mapFileWithMetadata(file))
+    return (body.data || []).map((file: any) => this._mapFileWithMetadata(file))
   },
 
-  /**
-   * Get a single file with all metadata
-   */
   async getFile(fileId: string): Promise<FileWithMetadata> {
-    const { data, error } = await supabase
-      .from('files')
-      .select(
-        `
-        *,
-        file_comments(*),
-        file_shares(*)
-      `
-      )
-      .eq('id', fileId)
-      .single()
+    const resp = await fetch(`/api/files/get?id=${encodeURIComponent(fileId)}`, {
+      headers: await this._authHeaders(),
+    })
 
-    if (error) {
-      throw new Error(`Failed to fetch file: ${error.message}`)
-    }
-
-    return this._mapFileWithMetadata(data)
+    const body = await resp.json()
+    if (body.error) throw new Error(body.error)
+    return this._mapFileWithMetadata(body.data)
   },
 
-  /**
-   * Delete a file
-   */
   async deleteFile(fileId: string, storagePath: string): Promise<void> {
-    // Delete from storage
-    const { error: storageError } = await supabase.storage
-      .from('files')
-      .remove([storagePath])
+    const resp = await fetch(`/api/files/delete?id=${encodeURIComponent(fileId)}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(await this._authHeaders()),
+      },
+      body: JSON.stringify({ storagePath }),
+    })
 
-    if (storageError) {
-      console.warn(`Failed to delete file from storage: ${storageError.message}`)
-    }
-
-    // Delete from database
-    const { error: dbError } = await supabase
-      .from('files')
-      .delete()
-      .eq('id', fileId)
-
-    if (dbError) {
-      throw new Error(`Failed to delete file: ${dbError.message}`)
-    }
+    const body = await resp.json()
+    if (body.error) throw new Error(body.error || 'Failed to delete file')
   },
 
-  /**
-   * Share a file with a user
-   */
   async shareFile(
     fileId: string,
     userId: string,
     permissionLevel: FilePermissionLevel = 'view'
   ): Promise<FileShare> {
-    const currentUser = (await supabase.auth.getUser()).data.user?.id
-    if (!currentUser) {
-      throw new Error('User not authenticated')
-    }
+    const resp = await fetch(`/api/files/share`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(await this._authHeaders()),
+      },
+      body: JSON.stringify({ fileId, sharedWithUserId: userId, permissionLevel }),
+    })
 
-    const { data, error } = await supabase
-      .from('file_shares')
-      .insert([
-        {
-          file_id: fileId,
-          shared_with_user_id: userId,
-          shared_by_user_id: currentUser,
-          permission_level: permissionLevel,
-        },
-      ])
-      .select()
-      .single()
-
-    if (error) {
-      throw new Error(`Failed to share file: ${error.message}`)
-    }
-
-    return data
+    const body = await resp.json()
+    if (body.error) throw new Error(body.error || 'Failed to share file')
+    return body.data
   },
 
-  /**
-   * Revoke file access
-   */
   async revokeShare(shareId: string): Promise<void> {
-    const { error } = await supabase
-      .from('file_shares')
-      .delete()
-      .eq('id', shareId)
-
-    if (error) {
-      throw new Error(`Failed to revoke share: ${error.message}`)
-    }
+    const { error } = await supabase.from('file_shares').delete().eq('id', shareId)
+    if (error) throw new Error(`Failed to revoke share: ${error.message}`)
   },
 
-  /**
-   * Add a comment to a file
-   */
   async addComment(
     fileId: string,
     comment: string,
     timestampPosition?: number
   ): Promise<FileComment> {
-    const userId = (await supabase.auth.getUser()).data.user?.id
-    if (!userId) {
-      throw new Error('User not authenticated')
-    }
+    const resp = await fetch(`/api/files/comment`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(await this._authHeaders()),
+      },
+      body: JSON.stringify({ fileId, comment, timestampPosition }),
+    })
 
-    const { data, error } = await supabase
-      .from('file_comments')
-      .insert([
-        {
-          file_id: fileId,
-          user_id: userId,
-          comment,
-          timestamp_position: timestampPosition,
-        },
-      ])
-      .select()
-      .single()
-
-    if (error) {
-      throw new Error(`Failed to add comment: ${error.message}`)
-    }
-
-    return data
+    const body = await resp.json()
+    if (body.error) throw new Error(body.error || 'Failed to add comment')
+    return body.data
   },
 
-  /**
-   * Delete a comment
-   */
   async deleteComment(commentId: string): Promise<void> {
-    const { error } = await supabase
-      .from('file_comments')
-      .delete()
-      .eq('id', commentId)
-
-    if (error) {
-      throw new Error(`Failed to delete comment: ${error.message}`)
-    }
+    const { error } = await supabase.from('file_comments').delete().eq('id', commentId)
+    if (error) throw new Error(`Failed to delete comment: ${error.message}`)
   },
 
-  /**
-   * Get all comments for a file
-   */
   async getFileComments(fileId: string): Promise<FileComment[]> {
     const { data, error } = await supabase
       .from('file_comments')
@@ -255,14 +172,10 @@ export const fileService = {
       .eq('file_id', fileId)
       .order('created_at', { ascending: false })
 
-    if (error) {
-      throw new Error(`Failed to fetch comments: ${error.message}`)
-    }
-
+    if (error) throw new Error(`Failed to fetch comments: ${error.message}`)
     return data || []
   },
 
-  // Helper methods
   _mapFileRecord(data: any): FileRecord {
     return {
       id: data.id,
@@ -282,7 +195,6 @@ export const fileService = {
 
   _mapFileWithMetadata(data: any): FileWithMetadata {
     const fileRecord = this._mapFileRecord(data)
-
     return {
       ...fileRecord,
       commentCount: (data.file_comments || []).length,
