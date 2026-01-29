@@ -23,6 +23,7 @@ import AnnouncementsFeedPage from '@/pages/player/AnnouncementsFeedPage'
 import PracticePlansPage from '@/pages/coach/PracticePlansPage'
 import DrillLibrary from '@/pages/drills/DrillLibrary'
 import FilesPage from '@/pages/FilesPage'
+import LibraryPage from '@/pages/LibraryPage'
 import ProtectedRoute from '@/components/routing/ProtectedRoute'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import ServicesTestPage from '@/pages/test/ServicesTestPage'
@@ -286,7 +287,7 @@ function AppRoutes() {
         path="/library"
         element={
           <ProtectedRoute>
-            <DrillLibrary />
+            <LibraryPage />
           </ProtectedRoute>
         }
       />
