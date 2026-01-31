@@ -93,6 +93,38 @@ export const fileService = {
     return (body.data || []).map((file: any) => this._mapFileWithMetadata(file))
   },
 
+  async searchFiles(options: {
+    q?: string
+    entityType?: FileEntityType | 'all'
+    fileType?: string
+    sort?: 'newest' | 'oldest'
+    page?: number
+    pageSize?: number
+  }): Promise<{ data: FileWithMetadata[]; count: number; page: number; pageSize: number }> {
+    const params = new URLSearchParams()
+    if (options.q) params.set('q', options.q)
+    if (options.entityType && options.entityType !== 'all')
+      params.set('entityType', options.entityType)
+    if (options.fileType) params.set('fileType', options.fileType)
+    if (options.sort) params.set('sort', options.sort)
+    if (options.page) params.set('page', String(options.page))
+    if (options.pageSize) params.set('pageSize', String(options.pageSize))
+
+    const resp = await fetch(`/api/files/search?${params.toString()}`, {
+      headers: await this._authHeaders(),
+    })
+
+    const body = await resp.json()
+    if (body.error) throw new Error(body.error || 'Search failed')
+
+    return {
+      data: (body.data || []).map((f: any) => this._mapFileWithMetadata(f)),
+      count: body.count || 0,
+      page: body.page || 1,
+      pageSize: body.pageSize || 20,
+    }
+  },
+
   async getFile(fileId: string): Promise<FileWithMetadata> {
     const resp = await fetch(`/api/files/get?id=${encodeURIComponent(fileId)}`, {
       headers: await this._authHeaders(),

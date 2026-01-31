@@ -10,8 +10,12 @@ export default async function handler(req, res) {
     entityType = 'general',
   } = req.query
 
+  import { getUserFromReq } from '../_lib/auth'
+
   try {
-    const path = `${entityType}/${Date.now()}-${fileName}`
+    const { user } = await getUserFromReq(req)
+    if (!user) return res.status(401).json({ error: 'Unauthorized' })
+    const path = `${entityType}/${user.id}/${Date.now()}-${fileName}`
 
     // Return a generated storage path and a public URL (clients may still upload via Supabase client)
     const { data: publicData } = supabase.storage.from('files').getPublicUrl(path)
