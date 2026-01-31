@@ -101,6 +101,46 @@ export default function FilesPage() {
     }
   }
 
+  const openShareDialogForFile = (fileId: string) => {
+    const file = files.find(f => f.id === fileId) || null
+    setSelectedFile(file)
+    setShowShareDialog(true)
+  }
+
+  const handleShare = async (userId: string, permissionLevel = 'view') => {
+    if (!selectedFile) return
+
+    try {
+      setIsLoading(true)
+      await fileService.shareFile(selectedFile.id, userId, permissionLevel as any)
+      const updated = await fileService.getFile(selectedFile.id)
+      setSelectedFile(updated)
+      setFiles(files.map(f => (f.id === updated.id ? updated : f)))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to share file')
+      console.error('Error sharing file:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleRevokeShare = async (shareId: string) => {
+    if (!selectedFile) return
+
+    try {
+      setIsLoading(true)
+      await fileService.revokeShare(shareId)
+      const updated = await fileService.getFile(selectedFile.id)
+      setSelectedFile(updated)
+      setFiles(files.map(f => (f.id === updated.id ? updated : f)))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to revoke share')
+      console.error('Error revoking share:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const handleAddComment = async (comment: string, timestamp?: number) => {
     if (!selectedFile) return
 
@@ -208,9 +248,7 @@ export default function FilesPage() {
             isLoading={isLoading}
             onFileSelect={setSelectedFile}
             onDelete={handleDeleteFile}
-            onShare={() => {
-              setShowShareDialog(true)
-            }}
+            onShare={openShareDialogForFile}
             showActions={true}
             viewMode={viewMode}
             filterByType={filterByType === 'all' ? undefined : filterByType}
@@ -262,6 +300,8 @@ export default function FilesPage() {
                       fileId={selectedFile.id}
                       existingShares={selectedFile.shares || []}
                       isLoading={isLoading}
+                      onShare={handleShare}
+                      onRevokeShare={handleRevokeShare}
                     />
                   </div>
                 )}
