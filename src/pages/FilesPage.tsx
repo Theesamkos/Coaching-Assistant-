@@ -18,6 +18,7 @@ export default function FilesPage() {
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [showShareDialog, setShowShareDialog] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
   const [filterByType, setFilterByType] = useState<FileEntityType | 'all'>('all')
   const [error, setError] = useState<string | null>(null)
@@ -57,6 +58,14 @@ export default function FilesPage() {
     try {
       setIsUploading(true)
       setError(null)
+      setUploadProgress(0)
+
+      // start a simulated progress indicator while the real upload proceeds
+      let progress = 0
+      const timer = setInterval(() => {
+        progress = Math.min(90, progress + Math.floor(Math.random() * 10) + 5)
+        setUploadProgress(progress)
+      }, 400)
 
       // Upload to storage
       const { url } = await fileService.uploadFile(file, 'general')
@@ -70,11 +79,15 @@ export default function FilesPage() {
       // Refresh files list
       await loadFiles()
       setShowUploadModal(false)
+      setUploadProgress(100)
+      clearInterval(timer)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to upload file')
       console.error('Error uploading file:', err)
     } finally {
       setIsUploading(false)
+      // reset progress shortly after completion/failure
+      setTimeout(() => setUploadProgress(null), 700)
     }
   }
 
@@ -335,6 +348,18 @@ export default function FilesPage() {
               maxSize={50 * 1024 * 1024}
               disabled={isUploading}
             />
+
+            {uploadProgress !== null && (
+              <div className="mt-4">
+                <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="h-2 bg-blue-500 transition-width"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+                <div className="text-sm text-slate-600 mt-2">Uploading — {uploadProgress}%</div>
+              </div>
+            )}
 
             <div className="mt-6 flex gap-2 justify-end">
               <button
