@@ -27,6 +27,7 @@ import LibraryPage from '@/pages/LibraryPage'
 import ProtectedRoute from '@/components/routing/ProtectedRoute'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import ServicesTestPage from '@/pages/test/ServicesTestPage'
+import AssistantPage from '@/pages/AssistantPage'
 
 function AppRoutes() {
   const { loading, isAuthenticated, needsProfileSetup, userProfile } = useAuth()
@@ -305,12 +306,7 @@ function AppRoutes() {
         path="/ai-assistant"
         element={
           <ProtectedRoute>
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-slate-900 mb-2">AI Assistant</h1>
-                <p className="text-slate-600">Coming soon...</p>
-              </div>
-            </div>
+            <AssistantPage />
           </ProtectedRoute>
         }
       />
