@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Bars3Icon } from '@heroicons/react/24/solid'
 import Sidebar from './Sidebar'
+import Footer from './Footer'
 import { User as SupabaseUser } from '@supabase/supabase-js'
 import { User, UserRole } from '@/types'
 
@@ -39,9 +40,11 @@ export default function DashboardLayout({
         </div>
 
         {/* Page Content */}
-        <main className="p-4 md:p-6 lg:p-8">
+        <main className="p-4 md:p-6 lg:p-8 min-h-[calc(100vh-8rem)]">
           {children}
         </main>
+        
+        <Footer />
       </div>
     </div>
   )
