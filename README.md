@@ -90,10 +90,4 @@ src/
 ## Next Steps
 
 See `docs/tasks.md` for the complete development roadmap. Phase 1 includes:
-- ✅ Project setup
-- ✅ Authentication system
-- ✅ User profile setup
-- ⏳ Invitation system
-- ⏳ Routing and navigation
-- ⏳ Deployment setup
 
