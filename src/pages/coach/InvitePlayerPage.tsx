@@ -105,13 +105,14 @@ export default function InvitePlayerPage() {
   const handleCancelInvitation = async (invitationId: string) => {
     if (!userProfile?.id) return
     
-    const confirmed = window.confirm('Are you sure you want to cancel this invitation?')
+    const confirmed = window.confirm('Are you sure you want to delete this invitation?')
     if (!confirmed) return
 
     const { error } = await playerService.cancelInvitation(invitationId, userProfile.id)
     
     if (error) {
-      alert('Failed to cancel invitation')
+      alert(`Failed to delete invitation: ${error.message}`)
+      console.error('Delete invitation error:', error)
     } else {
       loadPendingInvitations()
     }

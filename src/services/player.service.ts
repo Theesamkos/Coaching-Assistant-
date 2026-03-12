@@ -319,19 +319,43 @@ export const playerService = {
   },
 
   /**
-   * Cancel a pending invitation
+   * Cancel/Delete a pending invitation - removes the record entirely
    */
   async cancelInvitation(
     invitationId: string, 
     coachId: string
   ): Promise<ApiResponse<boolean>> {
     try {
+      // First try to delete by id and coach_id (works for any status)
       const { error } = await supabase
         .from('coach_players')
-        .update({ status: 'cancelled' })
+        .delete()
         .eq('id', invitationId)
         .eq('coach_id', coachId)
-        .eq('status', 'pending')
+
+      if (error) {
+        return { data: null, error: { code: error.code, message: error.message } }
+      }
+
+      return { data: true, error: null }
+    } catch (error: any) {
+      return { data: null, error: { code: 'unknown_error', message: error.message } }
+    }
+  },
+
+  /**
+   * Delete a player/invite by row ID (works for manually added players too)
+   */
+  async deletePlayerById(
+    rowId: string,
+    coachId: string
+  ): Promise<ApiResponse<boolean>> {
+    try {
+      const { error } = await supabase
+        .from('coach_players')
+        .delete()
+        .eq('id', rowId)
+        .eq('coach_id', coachId)
 
       if (error) {
         return { data: null, error: { code: error.code, message: error.message } }
