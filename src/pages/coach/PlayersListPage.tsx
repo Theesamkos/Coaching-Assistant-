@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { playerManagementService } from '@/services/player-management.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
+import AddPlayerModal from '@/components/players/AddPlayerModal'
 import {
   EnhancedPlayer,
   EnhancedPlayerFilters,
@@ -27,6 +28,7 @@ export default function PlayersListPage() {
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid')
   const [showFilters, setShowFilters] = useState(false)
+  const [showAddPlayerModal, setShowAddPlayerModal] = useState(false)
 
   // Filters
   const [filters, setFilters] = useState<EnhancedPlayerFilters>({
@@ -115,6 +117,13 @@ export default function PlayersListPage() {
         </div>
 
         <div className="flex gap-3">
+          <button
+            onClick={() => setShowAddPlayerModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium transition-colors"
+          >
+            <PlusIcon className="h-5 w-5" />
+            Add Player
+          </button>
           <button
             onClick={() => navigate('/coach/players/invite')}
             className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg text-white font-medium transition-colors"
@@ -312,6 +321,12 @@ export default function PlayersListPage() {
       ) : (
         <PlayerTable players={players} onPlayerClick={(id) => navigate(`/coach/players/${id}`)} />
       )}
+
+      <AddPlayerModal
+        isOpen={showAddPlayerModal}
+        onClose={() => setShowAddPlayerModal(false)}
+        onSuccess={loadPlayers}
+      />
     </DashboardLayout>
   )
 }

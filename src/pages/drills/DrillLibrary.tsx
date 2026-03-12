@@ -4,6 +4,7 @@ import { drillService } from '@/services/drill.service'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import DrillModal from '@/components/drills/DrillModal'
 import DrillDetailModal from '@/components/drills/DrillDetailModal'
+import DrillEmailModal from '@/components/drills/DrillEmailModal'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
@@ -34,6 +35,8 @@ export default function DrillLibrary() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null)
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false)
+  const [drillToEmail, setDrillToEmail] = useState<Drill | null>(null)
   
   // Filter states
   const [searchTerm, setSearchTerm] = useState('')
@@ -140,6 +143,9 @@ export default function DrillLibrary() {
   function handleDrillCreated(newDrill: Drill) {
     setDrills([newDrill, ...drills])
     setIsCreateModalOpen(false)
+    // Open email modal to notify players
+    setDrillToEmail(newDrill)
+    setIsEmailModalOpen(true)
   }
 
   function handleDrillUpdated(updatedDrill: Drill) {
@@ -347,6 +353,12 @@ export default function DrillLibrary() {
           onToggleFavorite={() => handleToggleFavorite(selectedDrill.id, selectedDrill.isFavorite)}
         />
       )}
+
+      <DrillEmailModal
+        isOpen={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        drill={drillToEmail}
+      />
     </DashboardLayout>
   )
 }
